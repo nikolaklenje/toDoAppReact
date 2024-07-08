@@ -11,6 +11,11 @@ function App() {
       setListItem("");
     }
   };
+  const handleDelete = (index) => {
+    const newToDo = [...toDoList];
+    newToDo.splice(index, 1);
+    setToDoList(newToDo);
+  };
   return (
     <main className="App">
       <div className="container">
@@ -25,11 +30,16 @@ function App() {
         <div>
           <p>TO DO List:</p>
           <ul>
-            {toDoList.map((todo) => (
-              <li className="list-item" key={todo}>
+            {toDoList.map((todo, index) => (
+              <li className="list-item" key={index}>
                 {todo}
                 <p className="list-item-option">complete</p>
-                <p className="list-item-option">delete</p>
+                <p
+                  className="list-item-option"
+                  onClick={() => handleDelete(index)}
+                >
+                  delete
+                </p>
                 <p className="list-item-option">edit</p>
               </li>
             ))}
