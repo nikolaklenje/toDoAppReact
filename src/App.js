@@ -19,13 +19,19 @@ function App() {
             setListItem(e.target.value);
           }}
           type="text"
+          value={listItem}
         ></input>
         <button onClick={submitToList}>Add to the list</button>
         <div>
           <p>TO DO List:</p>
           <ul>
             {toDoList.map((todo) => (
-              <li key={todo}>{todo}</li>
+              <li className="list-item" key={todo}>
+                {todo}
+                <p className="list-item-option">complete</p>
+                <p className="list-item-option">delete</p>
+                <p className="list-item-option">edit</p>
+              </li>
             ))}
           </ul>
         </div>
