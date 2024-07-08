@@ -4,6 +4,7 @@ import { useState } from "react";
 function App() {
   const [toDoList, setToDoList] = useState([]);
   const [listItem, setListItem] = useState();
+  const [completeItems, setCompleteItemsList] = useState([]);
   const submitToList = (e) => {
     e.preventDefault();
     if (listItem) {
@@ -15,6 +16,11 @@ function App() {
     const newToDo = [...toDoList];
     newToDo.splice(index, 1);
     setToDoList(newToDo);
+  };
+  const handleComplete = (index) => {
+    const doneList = [...completeItems];
+    doneList.push(index);
+    setCompleteItemsList(doneList);
   };
   return (
     <main className="App">
@@ -31,9 +37,21 @@ function App() {
           <p>TO DO List:</p>
           <ul>
             {toDoList.map((todo, index) => (
-              <li className="list-item" key={index}>
+              <li
+                className={
+                  completeItems.includes(index)
+                    ? "list-item-complete"
+                    : "list-item"
+                }
+                key={index}
+              >
                 {todo}
-                <p className="list-item-option">complete</p>
+                <p
+                  className="list-item-option"
+                  onClick={() => handleComplete(index)}
+                >
+                  complete
+                </p>
                 <p
                   className="list-item-option"
                   onClick={() => handleDelete(index)}
