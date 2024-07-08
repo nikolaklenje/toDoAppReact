@@ -12,7 +12,25 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
+.list-item {
+  display: flex;
+  flex-direction: row;
+  font-size: 36px;
+}
+.list-item-complete {
+  display: flex;
+  flex-direction: row;
+  font-size: 36px;
+  text-decoration: line-through;
+}
+.list-item-complete p {
+  display: none;
+}
+.list-item-option {
+  padding-left: 4px;
+  font-size: 12px;
+  margin: 0;
+}
 .App-link {
   color: #61dafb;
 }
