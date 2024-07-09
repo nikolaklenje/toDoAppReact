@@ -6,12 +6,22 @@ function App() {
   const [listItem, setListItem] = useState();
   const [completeItems, setCompleteItemsList] = useState([]);
   const [addingItems, setAddingItems] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState();
   const submitToList = (e) => {
     e.preventDefault();
     if (listItem) {
-      setToDoList([...toDoList, listItem]);
-      setAddingItems(false);
-      setListItem("");
+      if (typeof currentIndex === "number") {
+        const editedList = [...toDoList];
+        editedList.splice(currentIndex, 1, listItem);
+        setToDoList(editedList);
+        setAddingItems(false);
+        setCurrentIndex(null);
+        setListItem("");
+      } else {
+        setToDoList([...toDoList, listItem]);
+        setAddingItems(false);
+        setListItem("");
+      }
     }
   };
   const handleDelete = (index) => {
@@ -37,7 +47,11 @@ function App() {
               type="text"
               value={listItem}
             ></input>
-            <button onClick={submitToList}>Add Item</button>
+            {typeof currentIndex === "number" ? (
+              <button onClick={submitToList}>Edit Item</button>
+            ) : (
+              <button onClick={submitToList}>Add Item</button>
+            )}
           </div>
         ) : (
           <div>
@@ -68,7 +82,15 @@ function App() {
                   >
                     delete
                   </p>
-                  <p className="list-item-option">edit</p>
+                  <p
+                    className="list-item-option"
+                    onClick={() => {
+                      setCurrentIndex(index);
+                      setAddingItems(true);
+                    }}
+                  >
+                    edit
+                  </p>
                 </li>
               ))}
             </ul>
@@ -81,7 +103,4 @@ function App() {
 
 export default App;
 
-//Delete i done
-
 //Edit
-//dodavanje na drugoj strani
