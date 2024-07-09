@@ -14,14 +14,12 @@ function App() {
         const editedList = [...toDoList];
         editedList.splice(currentIndex, 1, listItem);
         setToDoList(editedList);
-        setAddingItems(false);
         setCurrentIndex(null);
-        setListItem("");
       } else {
         setToDoList([...toDoList, listItem]);
-        setAddingItems(false);
-        setListItem("");
       }
+      setAddingItems(false);
+      setListItem("");
     }
   };
   const handleDelete = (index) => {
@@ -102,5 +100,3 @@ function App() {
 }
 
 export default App;
-
-//Edit
