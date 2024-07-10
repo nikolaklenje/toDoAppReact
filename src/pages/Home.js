@@ -99,6 +99,3 @@ const Home = () => {
 };
 export default Home;
 //login (userName password, forgot),
-//signup
-//reset paswoord
-//forgot password

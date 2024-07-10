@@ -1,4 +1,12 @@
 const Login = () => {
-  return <div>Login Page</div>;
+  return (
+    <div>
+      Username:
+      <input type="email" placeholder="Email" />
+      Password:
+      <input type="password" placeholder="Password" />
+      <button>Login</button>
+    </div>
+  );
 };
 export default Login;
