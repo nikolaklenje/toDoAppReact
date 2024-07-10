@@ -98,4 +98,3 @@ const Home = () => {
   );
 };
 export default Home;
-//login (userName password, forgot),
