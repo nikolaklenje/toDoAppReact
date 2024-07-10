@@ -22,6 +22,7 @@ function App() {
       setListItem("");
     }
   };
+
   const handleDelete = (index) => {
     const newToDo = [...toDoList];
     newToDo.splice(index, 1);
@@ -100,3 +101,8 @@ function App() {
 }
 
 export default App;
+
+//login (userName password, forgot),
+//signup
+//reset paswoord
+//forgot password
