@@ -4,6 +4,7 @@ import { useState } from "react";
 const Home = () => {
   const [toDoList, setToDoList] = useState([]);
   const [listItem, setListItem] = useState();
+  //when item removed from to do remove from complete item as well
   const [completeItems, setCompleteItemsList] = useState([]);
   const [addingItems, setAddingItems] = useState(false);
   const [currentIndex, setCurrentIndex] = useState();
@@ -11,6 +12,7 @@ const Home = () => {
     e.preventDefault();
     if (listItem) {
       if (typeof currentIndex === "number") {
+        //nauci koj moj radis ovo dole
         const editedList = [...toDoList];
         editedList.splice(currentIndex, 1, listItem);
         setToDoList(editedList);
@@ -22,18 +24,20 @@ const Home = () => {
       setListItem("");
     }
   };
+  //spike button submit i button
 
   const handleDelete = (index) => {
     const newToDo = [...toDoList];
     newToDo.splice(index, 1);
     setToDoList(newToDo);
   };
+  //Refactor ova dva
   const handleComplete = (index) => {
     const doneList = [...completeItems];
     doneList.push(index);
     setCompleteItemsList(doneList);
   };
-
+  // renderaj based on url
   return (
     <main className="App">
       {addingItems ? (
@@ -50,6 +54,15 @@ const Home = () => {
           ) : (
             <button onClick={submitToList}>Add Item</button>
           )}
+          <button
+            onClick={() => {
+              setAddingItems(false);
+              setListItem("");
+            }}
+          >
+            {" "}
+            Back
+          </button>
         </div>
       ) : (
         <div>
