@@ -70,48 +70,52 @@ const Home = () => {
           <p>TO DO List:</p>
           <ul>
             {toDoList.map((todo, index) => (
-              <li
-                className={
-                  completeItems.includes(todo)
-                    ? "list-item-complete"
-                    : "list-item"
-                }
-                key={index}
-              >
-                {todo}
-                {!completeItems.includes(todo) ? (
-                  <>
+              <>
+                <li
+                  className={
+                    completeItems.includes(todo)
+                      ? "list-item-complete"
+                      : "list-item"
+                  }
+                  key={index}
+                >
+                  {todo}
+                </li>
+                <div>
+                  {!completeItems.includes(todo) ? (
+                    <>
+                      <p
+                        className="list-item-option"
+                        onClick={() => handleComplete(todo)}
+                      >
+                        complete
+                      </p>
+                      <p
+                        className="list-item-option"
+                        onClick={() => {
+                          setCurrentIndex(index);
+                          setAddingItems(true);
+                        }}
+                      >
+                        edit
+                      </p>
+                    </>
+                  ) : (
                     <p
                       className="list-item-option"
-                      onClick={() => handleComplete(todo)}
+                      onClick={() => handleUncomplete(todo)}
                     >
-                      complete
+                      uncomplete
                     </p>
-                    <p
-                      className="list-item-option"
-                      onClick={() => {
-                        setCurrentIndex(index);
-                        setAddingItems(true);
-                      }}
-                    >
-                      edit
-                    </p>
-                  </>
-                ) : (
+                  )}
                   <p
                     className="list-item-option"
-                    onClick={() => handleUncomplete(todo)}
+                    onClick={() => handleDelete(index, todo)}
                   >
-                    uncomplete
+                    delete
                   </p>
-                )}
-                <p
-                  className="list-item-option"
-                  onClick={() => handleDelete(index, todo)}
-                >
-                  delete
-                </p>
-              </li>
+                </div>
+              </>
             ))}
           </ul>
         </div>
@@ -120,7 +124,6 @@ const Home = () => {
   );
 };
 export default Home;
-//Check the filter and try to not create another array
 //Napravi array of objects instead
 // Proveri redosled dodavanja klasa
 //odradi rutiranje
