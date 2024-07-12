@@ -4,7 +4,6 @@ import { useState } from "react";
 const Home = () => {
   const [toDoList, setToDoList] = useState([]);
   const [listItem, setListItem] = useState();
-  //when item removed from to do remove from complete item as well
   const [completeItems, setCompleteItemsList] = useState([]);
   const [addingItems, setAddingItems] = useState(false);
   const [currentIndex, setCurrentIndex] = useState();
@@ -12,7 +11,6 @@ const Home = () => {
     e.preventDefault();
     if (listItem) {
       if (typeof currentIndex === "number") {
-        //nauci koj moj radis ovo dole
         const editedList = [...toDoList];
         editedList.splice(currentIndex, 1, listItem);
         setToDoList(editedList);
@@ -24,20 +22,23 @@ const Home = () => {
       setListItem("");
     }
   };
-  //spike button submit i button
 
-  const handleDelete = (index) => {
+  const handleDelete = (index, todo) => {
     const newToDo = [...toDoList];
-    newToDo.splice(index, 1);
-    setToDoList(newToDo);
+    const newCompleteItems = [...completeItems];
+    setToDoList(newToDo.filter((item) => newToDo.indexOf(item) !== index));
+    if (newCompleteItems.includes(todo)) {
+      setCompleteItemsList(newCompleteItems.filter((item) => item !== todo));
+    }
   };
-  //Refactor ova dva
-  const handleComplete = (index) => {
-    const doneList = [...completeItems];
-    doneList.push(index);
+  const handleComplete = (todo) => {
+    const doneList = [...completeItems, todo];
     setCompleteItemsList(doneList);
   };
-  // renderaj based on url
+  const handleUncomplete = (todo) => {
+    const undoneList = [...completeItems];
+    setCompleteItemsList(undoneList.filter((item) => item !== todo));
+  };
   return (
     <main className="App">
       {addingItems ? (
@@ -74,33 +75,44 @@ const Home = () => {
             {toDoList.map((todo, index) => (
               <li
                 className={
-                  completeItems.includes(index)
+                  completeItems.includes(todo)
                     ? "list-item-complete"
                     : "list-item"
                 }
                 key={index}
               >
                 {todo}
+                {!completeItems.includes(todo) ? (
+                  <>
+                    <p
+                      className="list-item-option"
+                      onClick={() => handleComplete(todo)}
+                    >
+                      complete
+                    </p>
+                    <p
+                      className="list-item-option"
+                      onClick={() => {
+                        setCurrentIndex(index);
+                        setAddingItems(true);
+                      }}
+                    >
+                      edit
+                    </p>
+                  </>
+                ) : (
+                  <p
+                    className="list-item-option"
+                    onClick={() => handleUncomplete(todo)}
+                  >
+                    uncomplete
+                  </p>
+                )}
                 <p
                   className="list-item-option"
-                  onClick={() => handleComplete(index)}
-                >
-                  complete
-                </p>
-                <p
-                  className="list-item-option"
-                  onClick={() => handleDelete(index)}
+                  onClick={() => handleDelete(index, todo)}
                 >
                   delete
-                </p>
-                <p
-                  className="list-item-option"
-                  onClick={() => {
-                    setCurrentIndex(index);
-                    setAddingItems(true);
-                  }}
-                >
-                  edit
                 </p>
               </li>
             ))}
