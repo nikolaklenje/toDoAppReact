@@ -24,11 +24,9 @@ const Home = () => {
   };
 
   const handleDelete = (index, todo) => {
-    const newToDo = [...toDoList];
-    const newCompleteItems = [...completeItems];
-    setToDoList(newToDo.filter((item) => newToDo.indexOf(item) !== index));
-    if (newCompleteItems.includes(todo)) {
-      setCompleteItemsList(newCompleteItems.filter((item) => item !== todo));
+    setToDoList(toDoList.filter((item) => toDoList.indexOf(item) !== index));
+    if (completeItems.includes(todo)) {
+      setCompleteItemsList(completeItems.filter((item) => item !== todo));
     }
   };
   const handleComplete = (todo) => {
@@ -36,8 +34,7 @@ const Home = () => {
     setCompleteItemsList(doneList);
   };
   const handleUncomplete = (todo) => {
-    const undoneList = [...completeItems];
-    setCompleteItemsList(undoneList.filter((item) => item !== todo));
+    setCompleteItemsList(completeItems.filter((item) => item !== todo));
   };
   return (
     <main className="App">
@@ -123,3 +120,7 @@ const Home = () => {
   );
 };
 export default Home;
+//Check the filter and try to not create another array
+//Napravi array of objects instead
+// Proveri redosled dodavanja klasa
+//odradi rutiranje
