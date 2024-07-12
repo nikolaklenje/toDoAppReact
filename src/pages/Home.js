@@ -23,17 +23,22 @@ const Home = () => {
     }
   };
 
-  const handleDelete = (index) => {
+  const handleDelete = (index, todo) => {
     const newToDo = [...toDoList];
-    newToDo.splice(index, 1);
-    setToDoList(newToDo);
+    const newCompleteItems = [...completeItems];
+    setToDoList(newToDo.filter((item) => newToDo.indexOf(item) !== index));
+    if (newCompleteItems.includes(todo)) {
+      setCompleteItemsList(newCompleteItems.filter((item) => item !== todo));
+    }
   };
-  const handleComplete = (index) => {
-    const doneList = [...completeItems];
-    doneList.push(index);
+  const handleComplete = (todo) => {
+    const doneList = [...completeItems, todo];
     setCompleteItemsList(doneList);
   };
-
+  const handleUncomplete = (todo) => {
+    const undoneList = [...completeItems];
+    setCompleteItemsList(undoneList.filter((item) => item !== todo));
+  };
   return (
     <main className="App">
       {addingItems ? (
@@ -50,6 +55,15 @@ const Home = () => {
           ) : (
             <button onClick={submitToList}>Add Item</button>
           )}
+          <button
+            onClick={() => {
+              setAddingItems(false);
+              setListItem("");
+            }}
+          >
+            {" "}
+            Back
+          </button>
         </div>
       ) : (
         <div>
@@ -61,33 +75,44 @@ const Home = () => {
             {toDoList.map((todo, index) => (
               <li
                 className={
-                  completeItems.includes(index)
+                  completeItems.includes(todo)
                     ? "list-item-complete"
                     : "list-item"
                 }
                 key={index}
               >
                 {todo}
+                {!completeItems.includes(todo) ? (
+                  <>
+                    <p
+                      className="list-item-option"
+                      onClick={() => handleComplete(todo)}
+                    >
+                      complete
+                    </p>
+                    <p
+                      className="list-item-option"
+                      onClick={() => {
+                        setCurrentIndex(index);
+                        setAddingItems(true);
+                      }}
+                    >
+                      edit
+                    </p>
+                  </>
+                ) : (
+                  <p
+                    className="list-item-option"
+                    onClick={() => handleUncomplete(todo)}
+                  >
+                    uncomplete
+                  </p>
+                )}
                 <p
                   className="list-item-option"
-                  onClick={() => handleComplete(index)}
-                >
-                  complete
-                </p>
-                <p
-                  className="list-item-option"
-                  onClick={() => handleDelete(index)}
+                  onClick={() => handleDelete(index, todo)}
                 >
                   delete
-                </p>
-                <p
-                  className="list-item-option"
-                  onClick={() => {
-                    setCurrentIndex(index);
-                    setAddingItems(true);
-                  }}
-                >
-                  edit
                 </p>
               </li>
             ))}
