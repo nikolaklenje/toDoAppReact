@@ -2,12 +2,9 @@ import "../App.css";
 import { useState } from "react";
 
 const Home = () => {
-  const toDoArray = [];
   const [toDoList, setToDoList] = useState([]);
-  // const [listItem, setListItem] = useState();
-  // const [completeItems, setCompleteItemsList] = useState([]);
   const [addingItems, setAddingItems] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(toDoArray.length);
+  const [currentIndex, setCurrentIndex] = useState(toDoList.length);
 
   const [toDoItem, setToDoItem] = useState({
     id: currentIndex,
@@ -22,28 +19,29 @@ const Home = () => {
     //     editedList.splice(currentIndex, 1, listItem);
     //     setToDoList(editedList);
     //     setCurrentIndex(null);
-    //   } else {
-    //     setToDoList([...toDoList, listItem]);
     //   }
-    //   setAddingItems(false);
-    //   setToDoItem({ listItem: "" });
-    // }
     if (toDoItem.listItem) {
       setToDoItem({
         ...toDoItem,
         id: currentIndex,
         complete: false,
       });
-      console.log("Ovako radi", toDoItem);
+      toDoList.push(toDoItem);
+      setAddingItems(false);
+      setToDoItem({
+        id: currentIndex,
+        listItem: "",
+        complete: false,
+      });
     }
   };
 
-  // const handleDelete = (index, todo) => {
-  //   setToDoList(toDoList.filter((item) => toDoList.indexOf(item) !== index));
-  //   if (completeItems.includes(todo)) {
-  //     setCompleteItemsList(completeItems.filter((item) => item !== todo));
-  //   }
-  // };
+  const handleDelete = (todo) => {
+    setToDoList(toDoList.filter((item) => item.listItem !== todo.listItem));
+    // if (completeItems.includes(todo)) {
+    //   setCompleteItemsList(completeItems.filter((item) => item !== todo));
+    // }
+  };
   // const handleComplete = (todo) => {
   //   const doneList = [...completeItems, todo];
   //   setCompleteItemsList(doneList);
@@ -93,12 +91,11 @@ const Home = () => {
                     //</> ? "list-item-complete"
                     "list-item"
                   }
-                  key={index}
                 >
-                  {todo}
+                  {todo.listItem}
                 </li>
-                {/* <div>
-                  {!completeItems.includes(todo) ? (
+                <div>
+                  {!todo.complete ? (
                     <>
                       <p
                         className="list-item-option"
@@ -126,11 +123,11 @@ const Home = () => {
                   )}
                   <p
                     className="list-item-option"
-                    //onClick={() => handleDelete(index, todo)}
+                    onClick={() => handleDelete(index, todo)}
                   >
                     delete
                   </p>
-                </div> */}
+                </div>
               </>
             ))}
           </ul>
