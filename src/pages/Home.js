@@ -2,50 +2,66 @@ import "../App.css";
 import { useState } from "react";
 
 const Home = () => {
+  const toDoArray = [];
   const [toDoList, setToDoList] = useState([]);
-  const [listItem, setListItem] = useState();
-  const [completeItems, setCompleteItemsList] = useState([]);
+  // const [listItem, setListItem] = useState();
+  // const [completeItems, setCompleteItemsList] = useState([]);
   const [addingItems, setAddingItems] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState();
+  const [currentIndex, setCurrentIndex] = useState(toDoArray.length);
+
+  const [toDoItem, setToDoItem] = useState({
+    id: currentIndex,
+    listItem: "",
+    complete: false,
+  });
   const submitToList = (e) => {
     e.preventDefault();
-    if (listItem) {
-      if (typeof currentIndex === "number") {
-        const editedList = [...toDoList];
-        editedList.splice(currentIndex, 1, listItem);
-        setToDoList(editedList);
-        setCurrentIndex(null);
-      } else {
-        setToDoList([...toDoList, listItem]);
-      }
-      setAddingItems(false);
-      setListItem("");
+    // if (listItem) {
+    //   if (typeof currentIndex === "number") {
+    //     const editedList = [...toDoList];
+    //     editedList.splice(currentIndex, 1, listItem);
+    //     setToDoList(editedList);
+    //     setCurrentIndex(null);
+    //   } else {
+    //     setToDoList([...toDoList, listItem]);
+    //   }
+    //   setAddingItems(false);
+    //   setToDoItem({ listItem: "" });
+    // }
+    if (toDoItem.listItem) {
+      setToDoItem({
+        ...toDoItem,
+        id: currentIndex,
+        complete: false,
+      });
+      console.log("Ovako radi", toDoItem);
     }
   };
 
-  const handleDelete = (index, todo) => {
-    setToDoList(toDoList.filter((item) => toDoList.indexOf(item) !== index));
-    if (completeItems.includes(todo)) {
-      setCompleteItemsList(completeItems.filter((item) => item !== todo));
-    }
-  };
-  const handleComplete = (todo) => {
-    const doneList = [...completeItems, todo];
-    setCompleteItemsList(doneList);
-  };
-  const handleUncomplete = (todo) => {
-    setCompleteItemsList(completeItems.filter((item) => item !== todo));
-  };
+  // const handleDelete = (index, todo) => {
+  //   setToDoList(toDoList.filter((item) => toDoList.indexOf(item) !== index));
+  //   if (completeItems.includes(todo)) {
+  //     setCompleteItemsList(completeItems.filter((item) => item !== todo));
+  //   }
+  // };
+  // const handleComplete = (todo) => {
+  //   const doneList = [...completeItems, todo];
+  //   setCompleteItemsList(doneList);
+  // };
+  // const handleUncomplete = (todo) => {
+  //   setCompleteItemsList(completeItems.filter((item) => item !== todo));
+  // };
+
   return (
     <main className="App">
       {addingItems ? (
         <div>
           <input
             onChange={(e) => {
-              setListItem(e.target.value);
+              setToDoItem({ ...toDoItem, listItem: e.target.value });
             }}
             type="text"
-            value={listItem}
+            value={toDoItem.listItem}
           ></input>
           {typeof currentIndex === "number" ? (
             <button onClick={submitToList}>Edit Item</button>
@@ -55,7 +71,7 @@ const Home = () => {
           <button
             onClick={() => {
               setAddingItems(false);
-              setListItem("");
+              setToDoItem({ id: null, listItem: "", complete: false });
             }}
           >
             {" "}
@@ -73,20 +89,20 @@ const Home = () => {
               <>
                 <li
                   className={
-                    completeItems.includes(todo)
-                      ? "list-item-complete"
-                      : "list-item"
+                    //completeItems.includes(todo)
+                    //</> ? "list-item-complete"
+                    "list-item"
                   }
                   key={index}
                 >
                   {todo}
                 </li>
-                <div>
+                {/* <div>
                   {!completeItems.includes(todo) ? (
                     <>
                       <p
                         className="list-item-option"
-                        onClick={() => handleComplete(todo)}
+                        //onClick={() => handleComplete(todo)}
                       >
                         complete
                       </p>
@@ -103,18 +119,18 @@ const Home = () => {
                   ) : (
                     <p
                       className="list-item-option"
-                      onClick={() => handleUncomplete(todo)}
+                      //onClick={() => handleUncomplete(todo)}
                     >
                       uncomplete
                     </p>
                   )}
                   <p
                     className="list-item-option"
-                    onClick={() => handleDelete(index, todo)}
+                    //onClick={() => handleDelete(index, todo)}
                   >
                     delete
                   </p>
-                </div>
+                </div> */}
               </>
             ))}
           </ul>
