@@ -5,7 +5,6 @@ const Home = () => {
   const [toDoList, setToDoList] = useState([]);
   const [addingItems, setAddingItems] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(toDoList.length);
-
   const [toDoItem, setToDoItem] = useState({
     id: currentIndex,
     listItem: "",
@@ -38,18 +37,20 @@ const Home = () => {
 
   const handleDelete = (index, todo) => {
     setToDoList(toDoList.filter((item) => item.listItem !== todo.listItem));
-    // if (completeItems.includes(todo)) {
-    //   setCompleteItemsList(completeItems.filter((item) => item !== todo));
-    // }
   };
-  // const handleComplete = (todo) => {
-  //   const doneList = [...completeItems, todo];
-  //   setCompleteItemsList(doneList);
-  // };
+  const handleComplete = (todo) => {
+    const indexToComplete = toDoList.findIndex(
+      (item) => todo.listItem === item.listItem
+    );
+    const updatedList = toDoList;
+    updatedList[indexToComplete].complete = true;
+    setToDoList(updatedList);
+  };
   // const handleUncomplete = (todo) => {
   //   setCompleteItemsList(completeItems.filter((item) => item !== todo));
   // };
-
+  // console.log("Complete", toDoList);
+  console.log("STARA", toDoList);
   return (
     <main className="App">
       {addingItems ? (
@@ -99,7 +100,7 @@ const Home = () => {
                     <>
                       <p
                         className="list-item-option"
-                        //onClick={() => handleComplete(todo)}
+                        onClick={() => handleComplete(todo)}
                       >
                         complete
                       </p>
