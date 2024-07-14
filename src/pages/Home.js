@@ -42,15 +42,15 @@ const Home = () => {
     const indexToComplete = toDoList.findIndex(
       (item) => todo.listItem === item.listItem
     );
-    const updatedList = toDoList;
-    updatedList[indexToComplete].complete = true;
+    const updatedList = [...toDoList];
+    if (!updatedList[indexToComplete].complete) {
+      updatedList[indexToComplete].complete = true;
+    } else {
+      updatedList[indexToComplete].complete = false;
+    }
     setToDoList(updatedList);
   };
-  // const handleUncomplete = (todo) => {
-  //   setCompleteItemsList(completeItems.filter((item) => item !== todo));
-  // };
-  // console.log("Complete", toDoList);
-  console.log("STARA", toDoList);
+
   return (
     <main className="App">
       {addingItems ? (
@@ -87,11 +87,7 @@ const Home = () => {
             {toDoList.map((todo, index) => (
               <>
                 <li
-                  className={
-                    //completeItems.includes(todo)
-                    //</> ? "list-item-complete"
-                    "list-item"
-                  }
+                  className={todo.complete ? "list-item-complete" : "list-item"}
                 >
                   {todo.listItem}
                 </li>
@@ -117,7 +113,7 @@ const Home = () => {
                   ) : (
                     <p
                       className="list-item-option"
-                      //onClick={() => handleUncomplete(todo)}
+                      onClick={() => handleComplete(todo)}
                     >
                       uncomplete
                     </p>
@@ -139,5 +135,5 @@ const Home = () => {
 };
 export default Home;
 //Napravi array of objects instead
-// Proveri redosled dodavanja klasa
+
 //odradi rutiranje
