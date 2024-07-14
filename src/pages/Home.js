@@ -36,7 +36,7 @@ const Home = () => {
     }
   };
 
-  const handleDelete = (todo) => {
+  const handleDelete = (index, todo) => {
     setToDoList(toDoList.filter((item) => item.listItem !== todo.listItem));
     // if (completeItems.includes(todo)) {
     //   setCompleteItemsList(completeItems.filter((item) => item !== todo));
