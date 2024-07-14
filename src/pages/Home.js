@@ -5,6 +5,7 @@ const Home = () => {
   const [toDoList, setToDoList] = useState([]);
   const [addingItems, setAddingItems] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(toDoList.length);
+  const [editedItem, setEditedItem] = useState("");
   const [toDoItem, setToDoItem] = useState({
     id: currentIndex,
     listItem: "",
@@ -12,26 +13,34 @@ const Home = () => {
   });
   const submitToList = (e) => {
     e.preventDefault();
-    // if (listItem) {
-    //   if (typeof currentIndex === "number") {
-    //     const editedList = [...toDoList];
-    //     editedList.splice(currentIndex, 1, listItem);
-    //     setToDoList(editedList);
-    //     setCurrentIndex(null);
-    //   }
     if (toDoItem.listItem) {
-      setToDoItem({
-        ...toDoItem,
-        id: currentIndex,
-        complete: false,
-      });
-      toDoList.push(toDoItem);
-      setAddingItems(false);
-      setToDoItem({
-        id: currentIndex,
-        listItem: "",
-        complete: false,
-      });
+      if (!editedItem) {
+        setToDoItem({
+          ...toDoItem,
+          id: currentIndex,
+          complete: false,
+        });
+        toDoList.push(toDoItem);
+        setAddingItems(false);
+        setToDoItem({
+          id: currentIndex,
+          listItem: "",
+          complete: false,
+        });
+      } else {
+        const indexToComplete = toDoList.findIndex(
+          (item) => editedItem.listItem === item.listItem
+        );
+        const editedList = [...toDoList];
+        editedList[indexToComplete].listItem = toDoItem.listItem;
+        setAddingItems(false);
+        setEditedItem(false);
+        setToDoItem({
+          id: currentIndex,
+          listItem: "",
+          complete: false,
+        });
+      }
     }
   };
 
@@ -62,7 +71,7 @@ const Home = () => {
             type="text"
             value={toDoItem.listItem}
           ></input>
-          {typeof currentIndex === "number" ? (
+          {editedItem ? (
             <button onClick={submitToList}>Edit Item</button>
           ) : (
             <button onClick={submitToList}>Add Item</button>
@@ -103,7 +112,7 @@ const Home = () => {
                       <p
                         className="list-item-option"
                         onClick={() => {
-                          setCurrentIndex(index);
+                          setEditedItem(todo);
                           setAddingItems(true);
                         }}
                       >
