@@ -94,12 +94,12 @@ const Home = () => {
           <p>TO DO List:</p>
           <ul>
             {toDoList.map((todo, index) => (
-              <>
-                <li
+              <li key={todo.listItem}>
+                <div
                   className={todo.complete ? "list-item-complete" : "list-item"}
                 >
                   {todo.listItem}
-                </li>
+                </div>
                 <div>
                   {!todo.complete ? (
                     <>
@@ -134,7 +134,7 @@ const Home = () => {
                     delete
                   </p>
                 </div>
-              </>
+              </li>
             ))}
           </ul>
         </div>
