@@ -1,18 +1,31 @@
 import "../App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Home = () => {
   const [toDoList, setToDoList] = useState([]);
   const [addingItems, setAddingItems] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(toDoList.length);
   const [editedItem, setEditedItem] = useState("");
+  const [currentComponent, setCurrentComponent] = useState();
   const [toDoItem, setToDoItem] = useState({
     id: currentIndex,
     listItem: "",
     complete: false,
   });
+  const useQueryParams = () => {
+    return new URLSearchParams(window.location.search);
+  };
+  const query = useQueryParams();
+  useEffect(() => {
+    setCurrentComponent(query.get("component"));
+  }, [window.location.search]);
+
+  const handleComponent = (componentName) => {
+    query.set("component", componentName);
+    window.history.pushState(null, "", `?${query.toString()}`);
+    setCurrentComponent(componentName);
+  };
   const submitToList = (e) => {
-    e.preventDefault();
     if (toDoItem.listItem) {
       if (!editedItem) {
         setToDoItem({
@@ -62,7 +75,7 @@ const Home = () => {
 
   return (
     <main className="App">
-      {addingItems ? (
+      {currentComponent === "Input" ? (
         <div>
           <input
             onChange={(e) => {
@@ -72,13 +85,27 @@ const Home = () => {
             value={toDoItem.listItem}
           ></input>
           {editedItem ? (
-            <button onClick={submitToList}>Edit Item</button>
+            <button
+              onClick={() => {
+                submitToList();
+                handleComponent("");
+              }}
+            >
+              Edit Item
+            </button>
           ) : (
-            <button onClick={submitToList}>Add Item</button>
+            <button
+              onClick={() => {
+                submitToList();
+                handleComponent("");
+              }}
+            >
+              Add Item
+            </button>
           )}
           <button
             onClick={() => {
-              setAddingItems(false);
+              handleComponent("");
               setToDoItem({ id: null, listItem: "", complete: false });
             }}
           >
@@ -88,7 +115,7 @@ const Home = () => {
         </div>
       ) : (
         <div>
-          <button onClick={() => setAddingItems(true)}>
+          <button onClick={() => handleComponent("Input")}>
             Add Items To a List?
           </button>
           <p>TO DO List:</p>
@@ -113,7 +140,7 @@ const Home = () => {
                         className="list-item-option"
                         onClick={() => {
                           setEditedItem(todo);
-                          setAddingItems(true);
+                          handleComponent("Input");
                         }}
                       >
                         edit
@@ -143,6 +170,3 @@ const Home = () => {
   );
 };
 export default Home;
-//Napravi array of objects instead
-
-//odradi rutiranje
