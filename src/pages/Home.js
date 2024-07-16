@@ -7,7 +7,6 @@ const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(toDoList.length);
   const [editedItem, setEditedItem] = useState("");
   const [toDoItem, setToDoItem] = useState({
-    id: currentIndex,
     listItem: "",
     complete: false,
   });
@@ -16,35 +15,24 @@ const Home = () => {
     // why is no empty value allowed
     if (toDoItem.listItem) {
       if (!editedItem) {
-        // why two time setToDoItem?
-        setToDoItem({
-          ...toDoItem,
-          id: currentIndex,
-          complete: false,
-        });
         toDoList.push(toDoItem);
         setAddingItems(false);
-        setToDoItem({
-          id: currentIndex,
-          listItem: "",
-          complete: false,
-        });
       } else {
         const indexToComplete = toDoList.findIndex(
           (item) => editedItem.listItem === item.listItem
         );
         const editedList = [...toDoList];
         editedList[indexToComplete].listItem = toDoItem.listItem;
-        setAddingItems(false);
         // why is setEditItem different data type?
-        setEditedItem(false);
-        setToDoItem({
-          id: currentIndex,
-          listItem: "",
-          complete: false,
-        });
+        setEditedItem("");
       }
     }
+    setToDoItem({
+      id: currentIndex,
+      listItem: "",
+      complete: false,
+    });
+    setAddingItems(false);
   };
 
   const handleDelete = (index, todo) => {
@@ -64,9 +52,6 @@ const Home = () => {
     setToDoList(updatedList);
   };
 
-  // on edit, current value isn't set in input
-  // when you click edit, than go back, than add items to list, edit button remains
-
   // id of element is always the same
 
   return (
@@ -78,7 +63,7 @@ const Home = () => {
               setToDoItem({ ...toDoItem, listItem: e.target.value });
             }}
             type="text"
-            value={toDoItem.listItem}
+            value={editedItem.listItem}
           ></input>
           {editedItem ? (
             <button onClick={submitToList}>Edit Item</button>
@@ -88,6 +73,7 @@ const Home = () => {
           <button
             onClick={() => {
               setAddingItems(false);
+              setEditedItem("");
               setToDoItem({ id: null, listItem: "", complete: false });
             }}
           >
@@ -103,8 +89,8 @@ const Home = () => {
           <p>TO DO List:</p>
           <ul>
             {toDoList.map((todo, index) => (
-                // what if text is the same?
-                // what if text is too long, will have impact on dom performance
+              // what if text is the same?
+              // what if text is too long, will have impact on dom performance
               <li key={todo.listItem}>
                 <div
                   className={todo.complete ? "list-item-complete" : "list-item"}
