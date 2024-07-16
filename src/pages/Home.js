@@ -22,7 +22,7 @@ const Home = () => {
 
   const handleComponent = (componentName) => {
     query.set("component", componentName);
-    window.history.pushState(null, "", `?${query.toString()}`);
+    window.history.pushState(null, "", `/${componentName}?${query.toString()}`);
     setCurrentComponent(componentName);
   };
   const submitToList = (e) => {
