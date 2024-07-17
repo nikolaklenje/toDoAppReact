@@ -23,7 +23,6 @@ const Home = () => {
         );
         const editedList = [...toDoList];
         editedList[indexToComplete].listItem = toDoItem.listItem;
-        // why is setEditItem different data type?
         setEditedItem("");
       }
     }
@@ -39,17 +38,13 @@ const Home = () => {
     setToDoList(toDoList.filter((item) => item.listItem !== todo.listItem));
   };
   const handleComplete = (todo) => {
-    const indexToComplete = toDoList.findIndex(
-      (item) => todo.listItem === item.listItem
+    setToDoList(
+      toDoList.map((item) =>
+        item.listItem === todo.listItem
+          ? { ...item, complete: !item.complete }
+          : item
+      )
     );
-    // refactor this to use map instead of searching for index and then clone and then setting boolean prop
-    const updatedList = [...toDoList];
-    if (!updatedList[indexToComplete].complete) {
-      updatedList[indexToComplete].complete = true;
-    } else {
-      updatedList[indexToComplete].complete = false;
-    }
-    setToDoList(updatedList);
   };
 
   // id of element is always the same
@@ -140,6 +135,3 @@ const Home = () => {
   );
 };
 export default Home;
-//Napravi array of objects instead
-
-//odradi rutiranje
