@@ -12,26 +12,29 @@ const Home = () => {
   });
   const submitToList = (e) => {
     e.preventDefault();
-    // why is no empty value allowed
-    if (toDoItem.listItem) {
+    if (!toDoItem.listItem) {
+      // checking this in order to prevent adding empty item to a list
+      alert("Input value or go back");
+    } else {
       if (!editedItem) {
         toDoList.push(toDoItem);
-        setAddingItems(false);
       } else {
-        const indexToComplete = toDoList.findIndex(
-          (item) => editedItem.listItem === item.listItem
+        setToDoList(
+          toDoList.map((item) =>
+            item.listItem === editedItem.listItem
+              ? { ...item, listItem: toDoItem.listItem }
+              : item
+          )
         );
-        const editedList = [...toDoList];
-        editedList[indexToComplete].listItem = toDoItem.listItem;
         setEditedItem("");
       }
+      setToDoItem({
+        id: currentIndex,
+        listItem: "",
+        complete: false,
+      });
+      setAddingItems(false);
     }
-    setToDoItem({
-      id: currentIndex,
-      listItem: "",
-      complete: false,
-    });
-    setAddingItems(false);
   };
 
   const handleDelete = (index, todo) => {
@@ -46,9 +49,6 @@ const Home = () => {
       )
     );
   };
-
-  // id of element is always the same
-
   return (
     <main className="App">
       {addingItems ? (
@@ -58,7 +58,7 @@ const Home = () => {
               setToDoItem({ ...toDoItem, listItem: e.target.value });
             }}
             type="text"
-            value={editedItem.listItem}
+            value={toDoItem.listItem}
           ></input>
           {editedItem ? (
             <button onClick={submitToList}>Edit Item</button>
