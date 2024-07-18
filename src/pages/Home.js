@@ -1,16 +1,24 @@
 import "../App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Home = () => {
   let itemId = Math.random().toString(16).slice(2);
+  let currentUrl = window.location.href;
   const [toDoList, setToDoList] = useState([]);
-  const [addingItems, setAddingItems] = useState(false);
   const [editedItem, setEditedItem] = useState("");
+  const [componentName, setComponentName] = useState("");
   const [toDoItem, setToDoItem] = useState({
     id: itemId,
     listItem: "",
     complete: false,
   });
+  useEffect(() => {
+    return (currentUrl = window.history.pushState(
+      null,
+      "",
+      `/${componentName}`
+    ));
+  }, [componentName]);
   const submitToList = (e) => {
     e.preventDefault();
     if (!toDoItem.listItem && !editedItem.listItem) {
@@ -33,7 +41,7 @@ const Home = () => {
         listItem: "",
         complete: false,
       });
-      setAddingItems(false);
+      setComponentName("");
     }
   };
 
@@ -51,7 +59,7 @@ const Home = () => {
   };
   return (
     <main className="App">
-      {addingItems ? (
+      {componentName ? (
         <div>
           <input
             onChange={(e) => {
@@ -69,7 +77,7 @@ const Home = () => {
           )}
           <button
             onClick={() => {
-              setAddingItems(false);
+              setComponentName("");
               setEditedItem("");
               setToDoItem({ id: null, listItem: "", complete: false });
             }}
@@ -80,7 +88,7 @@ const Home = () => {
         </div>
       ) : (
         <div>
-          <button onClick={() => setAddingItems(true)}>
+          <button onClick={() => setComponentName("add-item")}>
             Add Items To a List?
           </button>
           <p>TO DO List:</p>
@@ -105,7 +113,7 @@ const Home = () => {
                         className="list-item-option"
                         onClick={() => {
                           setEditedItem(todo);
-                          setAddingItems(true);
+                          setComponentName("edit-item");
                         }}
                       >
                         edit
