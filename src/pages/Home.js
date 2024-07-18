@@ -2,48 +2,38 @@ import "../App.css";
 import { useState } from "react";
 
 const Home = () => {
+  let itemId = Math.random().toString(16).slice(2);
   const [toDoList, setToDoList] = useState([]);
   const [addingItems, setAddingItems] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(toDoList.length);
   const [editedItem, setEditedItem] = useState("");
   const [toDoItem, setToDoItem] = useState({
-    id: currentIndex,
+    id: itemId,
     listItem: "",
     complete: false,
   });
   const submitToList = (e) => {
     e.preventDefault();
-    // why is no empty value allowed
-    if (toDoItem.listItem) {
+    if (!toDoItem.listItem && !editedItem.listItem) {
+      alert("Input value or go back");
+    } else {
       if (!editedItem) {
-        // why two time setToDoItem?
-        setToDoItem({
-          ...toDoItem,
-          id: currentIndex,
-          complete: false,
-        });
         toDoList.push(toDoItem);
-        setAddingItems(false);
-        setToDoItem({
-          id: currentIndex,
-          listItem: "",
-          complete: false,
-        });
       } else {
-        const indexToComplete = toDoList.findIndex(
-          (item) => editedItem.listItem === item.listItem
+        setToDoList(
+          toDoList.map((item) =>
+            item.id === editedItem.id
+              ? { ...item, listItem: editedItem.listItem }
+              : item
+          )
         );
-        const editedList = [...toDoList];
-        editedList[indexToComplete].listItem = toDoItem.listItem;
-        setAddingItems(false);
-        // why is setEditItem different data type?
-        setEditedItem(false);
-        setToDoItem({
-          id: currentIndex,
-          listItem: "",
-          complete: false,
-        });
+        setEditedItem("");
       }
+      setToDoItem({
+        id: itemId,
+        listItem: "",
+        complete: false,
+      });
+      setAddingItems(false);
     }
   };
 
@@ -51,34 +41,26 @@ const Home = () => {
     setToDoList(toDoList.filter((item) => item.listItem !== todo.listItem));
   };
   const handleComplete = (todo) => {
-    const indexToComplete = toDoList.findIndex(
-      (item) => todo.listItem === item.listItem
+    setToDoList(
+      toDoList.map((item) =>
+        item.listItem === todo.listItem
+          ? { ...item, complete: !item.complete }
+          : item
+      )
     );
-    // refactor this to use map instead of searching for index and then clone and then setting boolean prop
-    const updatedList = [...toDoList];
-    if (!updatedList[indexToComplete].complete) {
-      updatedList[indexToComplete].complete = true;
-    } else {
-      updatedList[indexToComplete].complete = false;
-    }
-    setToDoList(updatedList);
   };
-
-  // on edit, current value isn't set in input
-  // when you click edit, than go back, than add items to list, edit button remains
-
-  // id of element is always the same
-
   return (
     <main className="App">
       {addingItems ? (
         <div>
           <input
             onChange={(e) => {
-              setToDoItem({ ...toDoItem, listItem: e.target.value });
+              editedItem
+                ? setEditedItem({ ...editedItem, listItem: e.target.value })
+                : setToDoItem({ ...toDoItem, listItem: e.target.value });
             }}
             type="text"
-            value={toDoItem.listItem}
+            value={editedItem ? editedItem.listItem : toDoItem.listItem}
           ></input>
           {editedItem ? (
             <button onClick={submitToList}>Edit Item</button>
@@ -88,6 +70,7 @@ const Home = () => {
           <button
             onClick={() => {
               setAddingItems(false);
+              setEditedItem("");
               setToDoItem({ id: null, listItem: "", complete: false });
             }}
           >
@@ -103,9 +86,7 @@ const Home = () => {
           <p>TO DO List:</p>
           <ul>
             {toDoList.map((todo, index) => (
-                // what if text is the same?
-                // what if text is too long, will have impact on dom performance
-              <li key={todo.listItem}>
+              <li key={todo.id}>
                 <div
                   className={todo.complete ? "list-item-complete" : "list-item"}
                 >
@@ -154,6 +135,3 @@ const Home = () => {
   );
 };
 export default Home;
-//Napravi array of objects instead
-
-//odradi rutiranje
