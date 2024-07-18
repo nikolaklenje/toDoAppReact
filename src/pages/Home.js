@@ -2,18 +2,18 @@ import "../App.css";
 import { useState } from "react";
 
 const Home = () => {
+  let itemId = Math.random().toString(16).slice(2);
   const [toDoList, setToDoList] = useState([]);
   const [addingItems, setAddingItems] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(toDoList.length);
   const [editedItem, setEditedItem] = useState("");
   const [toDoItem, setToDoItem] = useState({
+    id: itemId,
     listItem: "",
     complete: false,
   });
   const submitToList = (e) => {
     e.preventDefault();
-    if (!toDoItem.listItem) {
-      // checking this in order to prevent adding empty item to a list
+    if (!toDoItem.listItem && !editedItem.listItem) {
       alert("Input value or go back");
     } else {
       if (!editedItem) {
@@ -21,15 +21,15 @@ const Home = () => {
       } else {
         setToDoList(
           toDoList.map((item) =>
-            item.listItem === editedItem.listItem
-              ? { ...item, listItem: toDoItem.listItem }
+            item.id === editedItem.id
+              ? { ...item, listItem: editedItem.listItem }
               : item
           )
         );
         setEditedItem("");
       }
       setToDoItem({
-        id: currentIndex,
+        id: itemId,
         listItem: "",
         complete: false,
       });
@@ -55,10 +55,12 @@ const Home = () => {
         <div>
           <input
             onChange={(e) => {
-              setToDoItem({ ...toDoItem, listItem: e.target.value });
+              editedItem
+                ? setEditedItem({ ...editedItem, listItem: e.target.value })
+                : setToDoItem({ ...toDoItem, listItem: e.target.value });
             }}
             type="text"
-            value={toDoItem.listItem}
+            value={editedItem ? editedItem.listItem : toDoItem.listItem}
           ></input>
           {editedItem ? (
             <button onClick={submitToList}>Edit Item</button>
@@ -84,9 +86,7 @@ const Home = () => {
           <p>TO DO List:</p>
           <ul>
             {toDoList.map((todo, index) => (
-              // what if text is the same?
-              // what if text is too long, will have impact on dom performance
-              <li key={todo.listItem}>
+              <li key={todo.id}>
                 <div
                   className={todo.complete ? "list-item-complete" : "list-item"}
                 >
