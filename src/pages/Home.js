@@ -3,21 +3,17 @@ import { useState, useEffect } from "react";
 
 const Home = () => {
   let itemId = Math.random().toString(16).slice(2);
-  let currentUrl = window.location.href;
+  const location = window.location.pathname.split("/")[1];
   const [toDoList, setToDoList] = useState([]);
   const [editedItem, setEditedItem] = useState("");
-  const [componentName, setComponentName] = useState("");
+  const [componentName, setComponentName] = useState(location);
   const [toDoItem, setToDoItem] = useState({
     id: itemId,
     listItem: "",
     complete: false,
   });
   useEffect(() => {
-    return (currentUrl = window.history.pushState(
-      null,
-      "",
-      `/${componentName}`
-    ));
+    return window.history.pushState(null, "", `/${componentName}`);
   }, [componentName]);
   const submitToList = (e) => {
     e.preventDefault();
@@ -59,7 +55,7 @@ const Home = () => {
   };
   return (
     <main className="App">
-      {componentName ? (
+      {componentName === "input" ? (
         <div>
           <input
             onChange={(e) => {
@@ -88,7 +84,7 @@ const Home = () => {
         </div>
       ) : (
         <div>
-          <button onClick={() => setComponentName("add-item")}>
+          <button onClick={() => setComponentName("input")}>
             Add Items To a List?
           </button>
           <p>TO DO List:</p>
@@ -113,7 +109,7 @@ const Home = () => {
                         className="list-item-option"
                         onClick={() => {
                           setEditedItem(todo);
-                          setComponentName("edit-item");
+                          setComponentName("input");
                         }}
                       >
                         edit

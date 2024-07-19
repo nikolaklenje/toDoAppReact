@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+// import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./pages/login";
-import SignUp from "./pages/signUp";
-import ResetPassword from "./pages/resetPassword";
-import ForgotPassword from "./pages/forgotPassword";
+// import Login from "./pages/login";
+// import SignUp from "./pages/signUp";
+// import ResetPassword from "./pages/resetPassword";
+// import ForgotPassword from "./pages/forgotPassword";
 
 const App = () => {
   useEffect(() => {
