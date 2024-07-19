@@ -41,6 +41,28 @@ const Home = () => {
     }
   };
 
+  // todo/edit/:id
+  // todo/edit/:val/:id
+  // todo/edit/bla/22
+  // todo/add
+  // todo?order=name&dir=[asc|desc]
+
+  /* we want hook useRouter that will return object like:
+   router = {
+    route: 'todo/edit/:id'
+    routParams?: {
+      id: '...' // 22
+      val: '...'// bla
+    },
+    queryParams?: {
+      order: 'name'
+      dir: 'asc/desc'
+    }
+   }
+   */
+
+  // add login/signup/... pages
+
   const handleDelete = (index, todo) => {
     setToDoList(toDoList.filter((item) => item.listItem !== todo.listItem));
   };
