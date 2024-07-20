@@ -21,6 +21,7 @@ const Home = () => {
       alert("Input value or go back");
     } else {
       if (!editedItem) {
+        // push doesn't change the array reference and will not trigger re-render
         toDoList.push(toDoItem);
       } else {
         setToDoList(
@@ -33,6 +34,7 @@ const Home = () => {
         setEditedItem("");
       }
       setToDoItem({
+        // id should be generated every time you add item to array. You generated itemId when component re-renders
         id: itemId,
         listItem: "",
         complete: false,
@@ -64,11 +66,14 @@ const Home = () => {
   // add login/signup/... pages
 
   const handleDelete = (index, todo) => {
+    // index is not needed
+    // you should compare ids not text values
     setToDoList(toDoList.filter((item) => item.listItem !== todo.listItem));
   };
   const handleComplete = (todo) => {
     setToDoList(
       toDoList.map((item) =>
+          // you should compare ids not text values
         item.listItem === todo.listItem
           ? { ...item, complete: !item.complete }
           : item
