@@ -8,7 +8,7 @@ const Home = () => {
   const [editedItem, setEditedItem] = useState("");
   const [componentName, setComponentName] = useState(location);
   const [toDoItem, setToDoItem] = useState({
-    id: itemId,
+    id: null,
     listItem: "",
     complete: false,
   });
@@ -21,8 +21,7 @@ const Home = () => {
       alert("Input value or go back");
     } else {
       if (!editedItem) {
-        // push doesn't change the array reference and will not trigger re-render
-        toDoList.push(toDoItem);
+        toDoList.push({ ...toDoItem, id: itemId });
       } else {
         setToDoList(
           toDoList.map((item) =>
@@ -34,8 +33,7 @@ const Home = () => {
         setEditedItem("");
       }
       setToDoItem({
-        // id should be generated every time you add item to array. You generated itemId when component re-renders
-        id: itemId,
+        id: null,
         listItem: "",
         complete: false,
       });
@@ -65,18 +63,13 @@ const Home = () => {
 
   // add login/signup/... pages
 
-  const handleDelete = (index, todo) => {
-    // index is not needed
-    // you should compare ids not text values
-    setToDoList(toDoList.filter((item) => item.listItem !== todo.listItem));
+  const handleDelete = (todo) => {
+    setToDoList(toDoList.filter((item) => item.id !== todo.id));
   };
   const handleComplete = (todo) => {
     setToDoList(
       toDoList.map((item) =>
-          // you should compare ids not text values
-        item.listItem === todo.listItem
-          ? { ...item, complete: !item.complete }
-          : item
+        item.id === todo.id ? { ...item, complete: !item.complete } : item
       )
     );
   };
@@ -152,7 +145,7 @@ const Home = () => {
                   )}
                   <p
                     className="list-item-option"
-                    onClick={() => handleDelete(index, todo)}
+                    onClick={() => handleDelete(todo)}
                   >
                     delete
                   </p>
@@ -166,3 +159,11 @@ const Home = () => {
   );
 };
 export default Home;
+
+//Napravi hook
+//kako iz rute da isparsiram query params
+//kako mise zove param i gde se nalazi i da parsiram url
+//uzmes odredjeni zapis i iscupas iz njega nesto je parsiranje
+
+//strogo vezano je za teksove
+//da bi parsiara moras da znas pravila za odredeeni tip (Json i xml imaju razlicita pravila)
