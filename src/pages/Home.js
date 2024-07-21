@@ -1,22 +1,27 @@
 import "../App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Home = () => {
   let itemId = Math.random().toString(16).slice(2);
+  const location = window.location.pathname.split("/")[1];
   const [toDoList, setToDoList] = useState([]);
-  const [addingItems, setAddingItems] = useState(false);
   const [editedItem, setEditedItem] = useState("");
+  const [componentName, setComponentName] = useState(location);
   const [toDoItem, setToDoItem] = useState({
     id: itemId,
     listItem: "",
     complete: false,
   });
+  useEffect(() => {
+    return window.history.pushState(null, "", `/${componentName}`);
+  }, [componentName]);
   const submitToList = (e) => {
     e.preventDefault();
     if (!toDoItem.listItem && !editedItem.listItem) {
       alert("Input value or go back");
     } else {
       if (!editedItem) {
+        // push doesn't change the array reference and will not trigger re-render
         toDoList.push(toDoItem);
       } else {
         setToDoList(
@@ -29,20 +34,46 @@ const Home = () => {
         setEditedItem("");
       }
       setToDoItem({
+        // id should be generated every time you add item to array. You generated itemId when component re-renders
         id: itemId,
         listItem: "",
         complete: false,
       });
-      setAddingItems(false);
+      setComponentName("");
     }
   };
 
+  // todo/edit/:id
+  // todo/edit/:val/:id
+  // todo/edit/bla/22
+  // todo/add
+  // todo?order=name&dir=[asc|desc]
+
+  /* we want hook useRouter that will return object like:
+   router = {
+    route: 'todo/edit/:id'
+    routParams?: {
+      id: '...' // 22
+      val: '...'// bla
+    },
+    queryParams?: {
+      order: 'name'
+      dir: 'asc/desc'
+    }
+   }
+   */
+
+  // add login/signup/... pages
+
   const handleDelete = (index, todo) => {
+    // index is not needed
+    // you should compare ids not text values
     setToDoList(toDoList.filter((item) => item.listItem !== todo.listItem));
   };
   const handleComplete = (todo) => {
     setToDoList(
       toDoList.map((item) =>
+          // you should compare ids not text values
         item.listItem === todo.listItem
           ? { ...item, complete: !item.complete }
           : item
@@ -51,7 +82,7 @@ const Home = () => {
   };
   return (
     <main className="App">
-      {addingItems ? (
+      {componentName === "input" ? (
         <div>
           <input
             onChange={(e) => {
@@ -69,7 +100,7 @@ const Home = () => {
           )}
           <button
             onClick={() => {
-              setAddingItems(false);
+              setComponentName("");
               setEditedItem("");
               setToDoItem({ id: null, listItem: "", complete: false });
             }}
@@ -80,7 +111,7 @@ const Home = () => {
         </div>
       ) : (
         <div>
-          <button onClick={() => setAddingItems(true)}>
+          <button onClick={() => setComponentName("input")}>
             Add Items To a List?
           </button>
           <p>TO DO List:</p>
@@ -105,7 +136,7 @@ const Home = () => {
                         className="list-item-option"
                         onClick={() => {
                           setEditedItem(todo);
-                          setAddingItems(true);
+                          setComponentName("input");
                         }}
                       >
                         edit
