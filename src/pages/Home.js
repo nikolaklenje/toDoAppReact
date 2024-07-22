@@ -1,7 +1,22 @@
 import "../App.css";
 import { useState, useEffect } from "react";
 
+const useRouter = (url) => {
+  const [router, setCounter] = useState({
+    route: url.route, //"todo/edit/:id"
+    routParams: {
+      id: url.id, // 22
+      val: url.val, // bla
+    },
+    queryParams: {
+      order: url.order,
+      dir: url.dir,
+    },
+  });
+  return router;
+};
 const Home = () => {
+  let currentUrl = window.location.href;
   let itemId = Math.random().toString(16).slice(2);
   const location = window.location.pathname.split("/")[1];
   const [toDoList, setToDoList] = useState([]);
@@ -12,11 +27,23 @@ const Home = () => {
     listItem: "",
     complete: false,
   });
-  useEffect(() => {
-    return window.history.pushState(null, "", `/${componentName}`);
-  }, [componentName]);
+  let url = new URL(currentUrl);
+
+  let params = new URLSearchParams(url.search);
+
+  const addQueryParams = (todo) => {
+    params.append("id", todo.id);
+    params.append("val", todo.listItem);
+    url.search = params.toString();
+    window.history.pushState(null, "", url);
+  };
+  const removeQueryParams = () => {
+    url.search = "";
+    window.history.pushState(null, "", url);
+  };
   const submitToList = (e) => {
     e.preventDefault();
+    addQueryParams();
     if (!toDoItem.listItem && !editedItem.listItem) {
       alert("Input value or go back");
     } else {
@@ -31,6 +58,7 @@ const Home = () => {
           )
         );
         setEditedItem("");
+        removeQueryParams();
       }
       setToDoItem({
         id: null,
@@ -95,6 +123,7 @@ const Home = () => {
             onClick={() => {
               setComponentName("");
               setEditedItem("");
+              removeQueryParams();
               setToDoItem({ id: null, listItem: "", complete: false });
             }}
           >
@@ -104,7 +133,12 @@ const Home = () => {
         </div>
       ) : (
         <div>
-          <button onClick={() => setComponentName("input")}>
+          <button
+            onClick={() => {
+              setComponentName("input");
+              addQueryParams();
+            }}
+          >
             Add Items To a List?
           </button>
           <p>TO DO List:</p>
@@ -130,6 +164,7 @@ const Home = () => {
                         onClick={() => {
                           setEditedItem(todo);
                           setComponentName("input");
+                          addQueryParams(todo);
                         }}
                       >
                         edit
@@ -167,3 +202,5 @@ export default Home;
 
 //strogo vezano je za teksove
 //da bi parsiara moras da znas pravila za odredeeni tip (Json i xml imaju razlicita pravila)
+
+// UrlParams -> HOOK(urlParams)=> return {object of params}}=>
