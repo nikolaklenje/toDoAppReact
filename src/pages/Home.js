@@ -6,7 +6,7 @@ const useRouter = (url) => {
     route: url.route, //"todo/edit/:id"
     routParams: {
       id: url.id, // 22
-      val: url.val, // bla
+      val: url.val, // blaskloni
     },
     queryParams: {
       order: url.order,
@@ -17,7 +17,7 @@ const useRouter = (url) => {
 };
 const Home = () => {
   let currentUrl = window.location.href;
-  let itemId = Math.random().toString(16).slice(2);
+  let itemId = Math.random().toString(16).slice(2); //napravi callback
   const location = window.location.pathname.split("/")[1];
   const [toDoList, setToDoList] = useState([]);
   const [editedItem, setEditedItem] = useState("");
@@ -28,12 +28,11 @@ const Home = () => {
     complete: false,
   });
   let url = new URL(currentUrl);
-
   let params = new URLSearchParams(url.search);
 
   const addQueryParams = (todo) => {
     params.append("id", todo.id);
-    params.append("val", todo.listItem);
+    params.append("val", todo.listItem); //skloni
     url.search = params.toString();
     window.history.pushState(null, "", url);
   };
