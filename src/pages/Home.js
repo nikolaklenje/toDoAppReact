@@ -2,11 +2,10 @@ import "../App.css";
 import { useState, useEffect } from "react";
 
 const useRouter = (url) => {
-  const [router, setCounter] = useState({
+  const [router, setRouter] = useState({
     route: url.route, //"todo/edit/:id"
     routParams: {
       id: url.id, // 22
-      val: url.val, // blaskloni
     },
     queryParams: {
       order: url.order,
@@ -17,7 +16,6 @@ const useRouter = (url) => {
 };
 const Home = () => {
   let currentUrl = window.location.href;
-  let itemId = Math.random().toString(16).slice(2); //napravi callback
   const location = window.location.pathname.split("/")[1];
   const [toDoList, setToDoList] = useState([]);
   const [editedItem, setEditedItem] = useState("");
@@ -32,21 +30,27 @@ const Home = () => {
 
   const addQueryParams = (todo) => {
     params.append("id", todo.id);
-    params.append("val", todo.listItem); //skloni
     url.search = params.toString();
     window.history.pushState(null, "", url);
+  };
+  const genId = () => {
+    let itemId = Math.random().toString(16).slice(2);
+    return itemId;
   };
   const removeQueryParams = () => {
     url.search = "";
     window.history.pushState(null, "", url);
   };
+  useEffect(() => {
+    removeQueryParams();
+  }, []);
   const submitToList = (e) => {
     e.preventDefault();
-    addQueryParams();
     if (!toDoItem.listItem && !editedItem.listItem) {
       alert("Input value or go back");
     } else {
       if (!editedItem) {
+        let itemId = genId();
         toDoList.push({ ...toDoItem, id: itemId });
       } else {
         setToDoList(
@@ -135,7 +139,6 @@ const Home = () => {
           <button
             onClick={() => {
               setComponentName("input");
-              addQueryParams();
             }}
           >
             Add Items To a List?
