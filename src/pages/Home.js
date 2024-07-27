@@ -25,19 +25,27 @@ const Home = () => {
     listItem: "",
     complete: false,
   });
+  console.log("DA comName", componentName);
+  console.log("DA curUrlD", currentUrl);
   let url = new URL(currentUrl);
   let params = new URLSearchParams(url.search);
-
-  const addQueryParams = (todo) => {
-    params.append("id", todo.id);
-    url.search = params.toString();
-    window.history.pushState(null, "", url);
-  };
   const genId = () => {
     let itemId = Math.random().toString(16).slice(2);
     return itemId;
   };
+
+  const handleEdit = (todo) => {
+    params.append("id", todo.id);
+    url.pathname = "edit";
+    url.search = params.toString();
+    window.history.pushState(null, "", url);
+  };
+  const handleAdd = () => {
+    url.pathname = "add";
+    window.history.pushState(null, "", url);
+  };
   const removeQueryParams = () => {
+    url.pathname = "";
     url.search = "";
     window.history.pushState(null, "", url);
   };
@@ -83,7 +91,7 @@ const Home = () => {
     route: 'todo/edit/:id'
     routParams?: {
       id: '...' // 22
-      val: '...'// bla
+
     },
     queryParams?: {
       order: 'name'
@@ -106,7 +114,7 @@ const Home = () => {
   };
   return (
     <main className="App">
-      {componentName === "input" ? (
+      {componentName === "add" || componentName === "edit" ? (
         <div>
           <input
             onChange={(e) => {
@@ -138,7 +146,8 @@ const Home = () => {
         <div>
           <button
             onClick={() => {
-              setComponentName("input");
+              setComponentName("add");
+              handleAdd();
             }}
           >
             Add Items To a List?
@@ -165,8 +174,8 @@ const Home = () => {
                         className="list-item-option"
                         onClick={() => {
                           setEditedItem(todo);
-                          setComponentName("input");
-                          addQueryParams(todo);
+                          setComponentName("edit");
+                          handleEdit(todo);
                         }}
                       >
                         edit
