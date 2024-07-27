@@ -1,6 +1,9 @@
 import "../App.css";
 import { useState, useEffect } from "react";
-
+import Login from "./login";
+import ResetPassword from "./resetPassword";
+import SignUp from "./signUp";
+import ForgotPassword from "./forgotPassword";
 // const useRouter = (url) => {
 //   const [router, setRouter] = useState({
 //     route: url.route, //"todo/edit/:id"
@@ -136,6 +139,14 @@ const Home = () => {
             Back
           </button>
         </div>
+      ) : componentName === "login" ? (
+        <Login />
+      ) : componentName === "signup" ? (
+        <SignUp />
+      ) : componentName === "forgotpassword" ? (
+        <ForgotPassword />
+      ) : componentName === "resetpassword" ? (
+        <ResetPassword />
       ) : (
         <div>
           <button
