@@ -25,8 +25,6 @@ const Home = () => {
     listItem: "",
     complete: false,
   });
-  console.log("DA comName", componentName);
-  console.log("DA curUrlD", currentUrl);
   let url = new URL(currentUrl);
   let params = new URLSearchParams(url.search);
   const genId = () => {
@@ -69,7 +67,6 @@ const Home = () => {
           )
         );
         setEditedItem("");
-        removeQueryParams();
       }
       setToDoItem({
         id: null,
@@ -77,6 +74,7 @@ const Home = () => {
         complete: false,
       });
       setComponentName("");
+      removeQueryParams();
     }
   };
 
