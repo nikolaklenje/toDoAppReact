@@ -1,19 +1,19 @@
 import "../App.css";
 import { useState, useEffect } from "react";
 
-const useRouter = (url) => {
-  const [router, setRouter] = useState({
-    route: url.route, //"todo/edit/:id"
-    routParams: {
-      id: url.id, // 22
-    },
-    queryParams: {
-      order: url.order,
-      dir: url.dir,
-    },
-  });
-  return router;
-};
+// const useRouter = (url) => {
+//   const [router, setRouter] = useState({
+//     route: url.route, //"todo/edit/:id"
+//     routParams: {
+//       id: url.id, // 22
+//     },
+//     queryParams: {
+//       order: url.order,
+//       dir: url.dir,
+//     },
+//   });
+//   return router;
+// };
 const Home = () => {
   let currentUrl = window.location.href;
   const location = window.location.pathname.split("/")[1];
@@ -26,20 +26,12 @@ const Home = () => {
     complete: false,
   });
   let url = new URL(currentUrl);
-  let params = new URLSearchParams(url.search);
   const genId = () => {
     let itemId = Math.random().toString(16).slice(2);
     return itemId;
   };
-
-  const handleEdit = (todo) => {
-    params.append("id", todo.id);
-    url.pathname = "edit";
-    url.search = params.toString();
-    window.history.pushState(null, "", url);
-  };
-  const handleAdd = () => {
-    url.pathname = "add";
+  const handlePathName = (pathname) => {
+    url.pathname = pathname;
     window.history.pushState(null, "", url);
   };
   const removeQueryParams = () => {
@@ -48,8 +40,12 @@ const Home = () => {
     window.history.pushState(null, "", url);
   };
   useEffect(() => {
-    removeQueryParams();
+    if (location === "edit") {
+      setComponentName("");
+      removeQueryParams();
+    }
   }, []);
+
   const submitToList = (e) => {
     e.preventDefault();
     if (!toDoItem.listItem && !editedItem.listItem) {
@@ -145,7 +141,7 @@ const Home = () => {
           <button
             onClick={() => {
               setComponentName("add");
-              handleAdd();
+              handlePathName("add");
             }}
           >
             Add Items To a List?
@@ -173,7 +169,7 @@ const Home = () => {
                         onClick={() => {
                           setEditedItem(todo);
                           setComponentName("edit");
-                          handleEdit(todo);
+                          handlePathName(`edit/${todo.id}`);
                         }}
                       >
                         edit
