@@ -4,21 +4,22 @@ import Login from "./login";
 import ResetPassword from "./resetPassword";
 import SignUp from "./signUp";
 import ForgotPassword from "./forgotPassword";
-// const useRouter = (url) => {
-//   const [router, setRouter] = useState({
-//     route: url.route, //"todo/edit/:id"
-//     routParams: {
-//       id: url.id, // 22
-//     },
-//     queryParams: {
-//       order: url.order,
-//       dir: url.dir,
-//     },
-//   });
-//   return router;
-// };
+const useRouter = (url) => {
+  const [router, setRouter] = useState({
+    route: url,
+    routParams: {
+      id: url.id, // 22
+    },
+    queryParams: {
+      order: "1",
+      dir: "2",
+    },
+  });
+  return router;
+};
 const Home = () => {
   let currentUrl = window.location.href;
+
   const location = window.location.pathname.split("/")[1];
   const [toDoList, setToDoList] = useState([]);
   const [editedItem, setEditedItem] = useState("");
@@ -28,6 +29,8 @@ const Home = () => {
     listItem: "",
     complete: false,
   });
+  const router = useRouter(currentUrl);
+  //console.log("Evo ti ga hook", router);
   let url = new URL(currentUrl);
   const genId = () => {
     let itemId = Math.random().toString(16).slice(2);
@@ -48,7 +51,22 @@ const Home = () => {
       removeQueryParams();
     }
   }, []);
-
+  const handleSorting = () => {
+    const sortedList = toDoList.sort((a, b) => {
+      const toDo1 = a.listItem.toUpperCase();
+      const toDo2 = b.listItem.toUpperCase();
+      if (toDo1 < toDo2) {
+        return -1;
+      }
+      if (toDo1 > toDo2) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    console.log("OVO JE SORTIRANO", sortedList);
+    setToDoList(sortedList);
+  };
   const submitToList = (e) => {
     e.preventDefault();
     if (!toDoItem.listItem && !editedItem.listItem) {
@@ -157,6 +175,19 @@ const Home = () => {
           >
             Add Items To a List?
           </button>
+          <div>
+            {" "}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                handleSorting();
+              }}
+            >
+              ASCENDING
+            </button>
+            <button>DESCENDING</button>
+          </div>
+
           <p>TO DO List:</p>
           <ul>
             {toDoList.map((todo, index) => (
