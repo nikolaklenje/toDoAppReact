@@ -51,21 +51,31 @@ const Home = () => {
       removeQueryParams();
     }
   }, []);
-  const handleSorting = () => {
+  const handleSorting = (sort) => {
     const sortedList = toDoList.sort((a, b) => {
       const toDo1 = a.listItem.toUpperCase();
       const toDo2 = b.listItem.toUpperCase();
-      if (toDo1 < toDo2) {
-        return -1;
-      }
-      if (toDo1 > toDo2) {
-        return 1;
-      } else {
-        return 0;
+      if (sort === "asc") {
+        if (toDo1 < toDo2) {
+          return -1;
+        }
+        if (toDo1 > toDo2) {
+          return 1;
+        } else {
+          return 0;
+        }
+      } else if (sort === "desc") {
+        if (toDo1 < toDo2) {
+          return 1;
+        }
+        if (toDo1 > toDo2) {
+          return -1;
+        } else {
+          return 0;
+        }
       }
     });
-    console.log("OVO JE SORTIRANO", sortedList);
-    setToDoList(sortedList);
+    setToDoList([...sortedList]);
   };
   const submitToList = (e) => {
     e.preventDefault();
@@ -180,17 +190,24 @@ const Home = () => {
             <button
               onClick={(e) => {
                 e.preventDefault();
-                handleSorting();
+                handleSorting("asc");
               }}
             >
               ASCENDING
             </button>
-            <button>DESCENDING</button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                handleSorting("desc");
+              }}
+            >
+              DESCENDING
+            </button>
           </div>
 
           <p>TO DO List:</p>
           <ul>
-            {toDoList.map((todo, index) => (
+            {toDoList.map((todo) => (
               <li key={todo.id}>
                 <div
                   className={todo.complete ? "list-item-complete" : "list-item"}
