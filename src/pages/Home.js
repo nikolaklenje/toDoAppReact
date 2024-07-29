@@ -1,10 +1,35 @@
 import "../App.css";
-import { useState, useEffect } from "react";
+import {useState, useEffect, useMemo, useCallback} from "react";
 import Login from "./login";
 import ResetPassword from "./resetPassword";
 import SignUp from "./signUp";
 import ForgotPassword from "./forgotPassword";
-const useRouter = (url) => {
+
+/*
+routs = [{
+  path: '/todo/edit/:id/:bla/:truc`
+  element: component
+  }, {
+
+  path: '/todo/add`
+  element: component
+  }, {
+
+  path: '/login`
+  element: component
+  }]
+ */
+
+
+// url = /todo/edit/123/nikola/klenje
+
+// routParams: {
+//  id: 123,
+//  bla: `nikola`,
+//  truc: `klenje`
+// }
+
+const useRouter = (url, routs) => {
   const [router, setRouter] = useState({
     route: url,
     routParams: {
@@ -17,6 +42,12 @@ const useRouter = (url) => {
   });
   return router;
 };
+
+const genId = () => {
+  let itemId = Math.random().toString(16).slice(2);
+  return itemId;
+};
+
 const Home = () => {
   let currentUrl = window.location.href;
 
@@ -29,13 +60,12 @@ const Home = () => {
     listItem: "",
     complete: false,
   });
+
+
   const router = useRouter(currentUrl);
   //console.log("Evo ti ga hook", router);
   let url = new URL(currentUrl);
-  const genId = () => {
-    let itemId = Math.random().toString(16).slice(2);
-    return itemId;
-  };
+
   const handlePathName = (pathname) => {
     url.pathname = pathname;
     window.history.pushState(null, "", url);
@@ -105,11 +135,13 @@ const Home = () => {
     }
   };
 
-  // todo/edit/:id
-  // todo/edit/:val/:id
-  // todo/edit/bla/22
-  // todo/add
-  // todo?order=name&dir=[asc|desc]
+  // /todo/edit/:id
+  // /todo/edit/:val/:id
+  // /todo/edit/bla/22
+  // /todo/add
+  //  todo?order=name&dir=[asc|desc]
+
+  // /login
 
   /* we want hook useRouter that will return object like:
    router = {

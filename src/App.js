@@ -56,6 +56,8 @@ const App = () => {
     <div className="container">
       {/* <Routes>
         <Route path="/" element={<Home />}></Route>
+        <Route path="/todo/edit/:slug/:id" element={<Home />}></Route>
+        <Route path="/login" element={<Login />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/signUp" element={<SignUp />}></Route>
         <Route path="/resetPassword" element={<ResetPassword />}></Route>
