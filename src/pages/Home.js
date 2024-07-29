@@ -1,28 +1,120 @@
 import "../App.css";
-import { useState, useEffect } from "react";
+import {useState, useEffect, useMemo, useCallback} from "react";
+import Login from "./login";
+import ResetPassword from "./resetPassword";
+import SignUp from "./signUp";
+import ForgotPassword from "./forgotPassword";
+
+/*
+routs = [{
+  path: '/todo/edit/:id/:bla/:truc`
+  element: component
+  }, {
+
+  path: '/todo/add`
+  element: component
+  }, {
+
+  path: '/login`
+  element: component
+  }]
+ */
+
+
+// url = /todo/edit/123/nikola/klenje
+
+// routParams: {
+//  id: 123,
+//  bla: `nikola`,
+//  truc: `klenje`
+// }
+
+const useRouter = (url, routs) => {
+  const [router, setRouter] = useState({
+    route: url,
+    routParams: {
+      id: url.id, // 22
+    },
+    queryParams: {
+      order: "1",
+      dir: "2",
+    },
+  });
+  return router;
+};
+
+const genId = () => {
+  let itemId = Math.random().toString(16).slice(2);
+  return itemId;
+};
 
 const Home = () => {
-  let itemId = Math.random().toString(16).slice(2);
+  let currentUrl = window.location.href;
+
   const location = window.location.pathname.split("/")[1];
   const [toDoList, setToDoList] = useState([]);
   const [editedItem, setEditedItem] = useState("");
   const [componentName, setComponentName] = useState(location);
   const [toDoItem, setToDoItem] = useState({
-    id: itemId,
+    id: null,
     listItem: "",
     complete: false,
   });
+
+
+  const router = useRouter(currentUrl);
+  //console.log("Evo ti ga hook", router);
+  let url = new URL(currentUrl);
+
+  const handlePathName = (pathname) => {
+    url.pathname = pathname;
+    window.history.pushState(null, "", url);
+  };
+  const removeQueryParams = () => {
+    url.pathname = "";
+    url.search = "";
+    window.history.pushState(null, "", url);
+  };
   useEffect(() => {
-    return window.history.pushState(null, "", `/${componentName}`);
-  }, [componentName]);
+    if (location === "edit") {
+      setComponentName("");
+      removeQueryParams();
+    }
+  }, []);
+  const handleSorting = (sort) => {
+    const sortedList = toDoList.sort((a, b) => {
+      const toDo1 = a.listItem.toUpperCase();
+      const toDo2 = b.listItem.toUpperCase();
+      if (sort === "asc") {
+        if (toDo1 < toDo2) {
+          return -1;
+        }
+        if (toDo1 > toDo2) {
+          return 1;
+        } else {
+          return 0;
+        }
+      } else if (sort === "desc") {
+        if (toDo1 < toDo2) {
+          return 1;
+        }
+        if (toDo1 > toDo2) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }
+    });
+    setToDoList([...sortedList]);
+  };
   const submitToList = (e) => {
     e.preventDefault();
     if (!toDoItem.listItem && !editedItem.listItem) {
       alert("Input value or go back");
     } else {
       if (!editedItem) {
-        // push doesn't change the array reference and will not trigger re-render
-        toDoList.push(toDoItem);
+        let itemId = genId();
+        toDoList.push({ ...toDoItem, id: itemId });
       } else {
         setToDoList(
           toDoList.map((item) =>
@@ -34,27 +126,29 @@ const Home = () => {
         setEditedItem("");
       }
       setToDoItem({
-        // id should be generated every time you add item to array. You generated itemId when component re-renders
-        id: itemId,
+        id: null,
         listItem: "",
         complete: false,
       });
       setComponentName("");
+      removeQueryParams();
     }
   };
 
-  // todo/edit/:id
-  // todo/edit/:val/:id
-  // todo/edit/bla/22
-  // todo/add
-  // todo?order=name&dir=[asc|desc]
+  // /todo/edit/:id
+  // /todo/edit/:val/:id
+  // /todo/edit/bla/22
+  // /todo/add
+  //  todo?order=name&dir=[asc|desc]
+
+  // /login
 
   /* we want hook useRouter that will return object like:
    router = {
     route: 'todo/edit/:id'
     routParams?: {
       id: '...' // 22
-      val: '...'// bla
+
     },
     queryParams?: {
       order: 'name'
@@ -65,24 +159,19 @@ const Home = () => {
 
   // add login/signup/... pages
 
-  const handleDelete = (index, todo) => {
-    // index is not needed
-    // you should compare ids not text values
-    setToDoList(toDoList.filter((item) => item.listItem !== todo.listItem));
+  const handleDelete = (todo) => {
+    setToDoList(toDoList.filter((item) => item.id !== todo.id));
   };
   const handleComplete = (todo) => {
     setToDoList(
       toDoList.map((item) =>
-          // you should compare ids not text values
-        item.listItem === todo.listItem
-          ? { ...item, complete: !item.complete }
-          : item
+        item.id === todo.id ? { ...item, complete: !item.complete } : item
       )
     );
   };
   return (
     <main className="App">
-      {componentName === "input" ? (
+      {componentName === "add" || componentName === "edit" ? (
         <div>
           <input
             onChange={(e) => {
@@ -102,6 +191,7 @@ const Home = () => {
             onClick={() => {
               setComponentName("");
               setEditedItem("");
+              removeQueryParams();
               setToDoItem({ id: null, listItem: "", complete: false });
             }}
           >
@@ -109,14 +199,47 @@ const Home = () => {
             Back
           </button>
         </div>
+      ) : componentName === "login" ? (
+        <Login />
+      ) : componentName === "signup" ? (
+        <SignUp />
+      ) : componentName === "forgotpassword" ? (
+        <ForgotPassword />
+      ) : componentName === "resetpassword" ? (
+        <ResetPassword />
       ) : (
         <div>
-          <button onClick={() => setComponentName("input")}>
+          <button
+            onClick={() => {
+              setComponentName("add");
+              handlePathName("add");
+            }}
+          >
             Add Items To a List?
           </button>
+          <div>
+            {" "}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                handleSorting("asc");
+              }}
+            >
+              ASCENDING
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                handleSorting("desc");
+              }}
+            >
+              DESCENDING
+            </button>
+          </div>
+
           <p>TO DO List:</p>
           <ul>
-            {toDoList.map((todo, index) => (
+            {toDoList.map((todo) => (
               <li key={todo.id}>
                 <div
                   className={todo.complete ? "list-item-complete" : "list-item"}
@@ -136,7 +259,8 @@ const Home = () => {
                         className="list-item-option"
                         onClick={() => {
                           setEditedItem(todo);
-                          setComponentName("input");
+                          setComponentName("edit");
+                          handlePathName(`edit/${todo.id}`);
                         }}
                       >
                         edit
@@ -152,7 +276,7 @@ const Home = () => {
                   )}
                   <p
                     className="list-item-option"
-                    onClick={() => handleDelete(index, todo)}
+                    onClick={() => handleDelete(todo)}
                   >
                     delete
                   </p>
@@ -166,3 +290,13 @@ const Home = () => {
   );
 };
 export default Home;
+
+//Napravi hook
+//kako iz rute da isparsiram query params
+//kako mise zove param i gde se nalazi i da parsiram url
+//uzmes odredjeni zapis i iscupas iz njega nesto je parsiranje
+
+//strogo vezano je za teksove
+//da bi parsiara moras da znas pravila za odredeeni tip (Json i xml imaju razlicita pravila)
+
+// UrlParams -> HOOK(urlParams)=> return {object of params}}=>
