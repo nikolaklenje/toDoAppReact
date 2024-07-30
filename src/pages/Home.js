@@ -1,5 +1,5 @@
 import "../App.css";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Login from "./login";
 import ResetPassword from "./resetPassword";
 import SignUp from "./signUp";
@@ -61,7 +61,6 @@ const Home = () => {
   });
 
   const router = useRouter(currentUrl);
-  //console.log("Evo ti ga hook", router);
   let url = new URL(currentUrl);
   let params = new URLSearchParams(url.search);
   const handlePathName = (pathname) => {
@@ -83,9 +82,10 @@ const Home = () => {
     const sortedList = toDoList.sort((a, b) => {
       const toDo1 = a.listItem.toUpperCase();
       const toDo2 = b.listItem.toUpperCase();
-      removeQueryParams();
+      params.delete("dir");
+      params.delete("order");
       params.append("order", "name");
-      if (sort === "asc") {
+      if (sort === "asc" && !params.has("dir", "asc")) {
         params.append("dir", "asc");
         url.search = params.toString();
         window.history.pushState(null, "", url);
@@ -97,7 +97,7 @@ const Home = () => {
         } else {
           return 0;
         }
-      } else if (sort === "desc") {
+      } else if (sort === "desc" && !params.has("dir", "desc")) {
         params.append("dir", "desc");
         url.search = params.toString();
         window.history.pushState(null, "", url);
@@ -218,7 +218,7 @@ const Home = () => {
           <button
             onClick={() => {
               setComponentName("add");
-              handlePathName("add");
+              handlePathName("todo/add");
             }}
           >
             Add Items To a List?
@@ -268,7 +268,7 @@ const Home = () => {
                         onClick={() => {
                           setEditedItem(todo);
                           setComponentName("edit");
-                          handlePathName(`edit/${todo.id}`);
+                          handlePathName(`todo/edit/${todo.id}`);
                         }}
                       >
                         edit
