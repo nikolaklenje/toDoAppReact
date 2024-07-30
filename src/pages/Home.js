@@ -1,5 +1,5 @@
 import "../App.css";
-import {useState, useEffect, useMemo, useCallback} from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Login from "./login";
 import ResetPassword from "./resetPassword";
 import SignUp from "./signUp";
@@ -19,7 +19,6 @@ routs = [{
   element: component
   }]
  */
-
 
 // url = /todo/edit/123/nikola/klenje
 
@@ -61,11 +60,10 @@ const Home = () => {
     complete: false,
   });
 
-
   const router = useRouter(currentUrl);
   //console.log("Evo ti ga hook", router);
   let url = new URL(currentUrl);
-
+  let params = new URLSearchParams(url.search);
   const handlePathName = (pathname) => {
     url.pathname = pathname;
     window.history.pushState(null, "", url);
@@ -85,7 +83,12 @@ const Home = () => {
     const sortedList = toDoList.sort((a, b) => {
       const toDo1 = a.listItem.toUpperCase();
       const toDo2 = b.listItem.toUpperCase();
+      removeQueryParams();
+      params.append("order", "name");
       if (sort === "asc") {
+        params.append("dir", "asc");
+        url.search = params.toString();
+        window.history.pushState(null, "", url);
         if (toDo1 < toDo2) {
           return -1;
         }
@@ -95,6 +98,9 @@ const Home = () => {
           return 0;
         }
       } else if (sort === "desc") {
+        params.append("dir", "desc");
+        url.search = params.toString();
+        window.history.pushState(null, "", url);
         if (toDo1 < toDo2) {
           return 1;
         }
@@ -222,6 +228,7 @@ const Home = () => {
             <button
               onClick={(e) => {
                 e.preventDefault();
+
                 handleSorting("asc");
               }}
             >
@@ -230,6 +237,7 @@ const Home = () => {
             <button
               onClick={(e) => {
                 e.preventDefault();
+
                 handleSorting("desc");
               }}
             >
