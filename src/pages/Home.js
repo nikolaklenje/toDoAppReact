@@ -28,7 +28,8 @@ routs = [{
 //  truc: `klenje`
 // }
 
-const useRouter = (url, routs) => {
+const useRouter = (url) => {
+  console.log("URl iz url", url);
   const urlParams = new URLSearchParams(url);
   const orderParam = urlParams.get("order");
   const dirParam = urlParams.get("dir");
@@ -45,14 +46,8 @@ const useRouter = (url, routs) => {
   return router;
 };
 
-const genId = () => {
-  let itemId = Math.random().toString(16).slice(2);
-  return itemId;
-};
-
 const Home = () => {
   let currentUrl = window.location.href;
-
   const location = window.location.pathname.split("/")[1];
   const [toDoList, setToDoList] = useState([]);
   const [editedItem, setEditedItem] = useState("");
@@ -63,7 +58,13 @@ const Home = () => {
     complete: false,
   });
 
-  const router = useRouter(currentUrl);
+  const genId = () => {
+    let itemId = Math.random().toString(16).slice(2);
+    return itemId;
+  };
+
+  const router = useRouter(window.location.href);
+  console.log("####@@@@", router);
   let url = new URL(currentUrl);
   let params = new URLSearchParams(url.search);
   const handlePathName = (pathname) => {
@@ -76,10 +77,8 @@ const Home = () => {
     window.history.pushState(null, "", url);
   };
   useEffect(() => {
-    if (location === "edit") {
-      setComponentName("");
-      removeQueryParams();
-    }
+    setComponentName("");
+    removeQueryParams();
   }, []);
   const handleSorting = (sort) => {
     const sortedList = toDoList.sort((a, b) => {
@@ -231,7 +230,6 @@ const Home = () => {
             <button
               onClick={(e) => {
                 e.preventDefault();
-
                 handleSorting("asc");
               }}
             >
@@ -240,7 +238,6 @@ const Home = () => {
             <button
               onClick={(e) => {
                 e.preventDefault();
-
                 handleSorting("desc");
               }}
             >
