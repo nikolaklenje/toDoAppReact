@@ -29,14 +29,17 @@ routs = [{
 // }
 
 const useRouter = (url, routs) => {
+  const urlParams = new URLSearchParams(url);
+  const orderParam = urlParams.get("order");
+  const dirParam = urlParams.get("dir");
   const [router, setRouter] = useState({
     route: url,
     routParams: {
       id: url.id, // 22
     },
     queryParams: {
-      order: "1",
-      dir: "2",
+      order: orderParam,
+      dir: dirParam,
     },
   });
   return router;
