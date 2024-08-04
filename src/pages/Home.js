@@ -29,20 +29,36 @@ routs = [{
 // }
 
 const useRouter = (url) => {
-  console.log("URl iz url", url);
-  const urlParams = new URLSearchParams(url);
-  const orderParam = urlParams.get("order");
-  const dirParam = urlParams.get("dir");
+  let query = window.location.search;
+  let urlParams = new URLSearchParams(query);
+  let orderParam = urlParams.get("order");
+  let dirParam = urlParams.get("dir");
   const [router, setRouter] = useState({
     route: url,
     routParams: {
       id: url.id, // 22
     },
     queryParams: {
-      order: orderParam,
-      dir: dirParam,
+      dir: orderParam,
+      order: dirParam,
     },
   });
+  useEffect(() => {
+    query = window.location.search;
+    urlParams = new URLSearchParams(query);
+    orderParam = urlParams.get("order");
+    dirParam = urlParams.get("dir");
+    setRouter({
+      route: url,
+      routParams: {
+        id: url.id, // 22
+      },
+      queryParams: {
+        dir: dirParam,
+        order: orderParam,
+      },
+    });
+  }, [url]);
   return router;
 };
 
@@ -67,6 +83,7 @@ const Home = () => {
   console.log("####@@@@", router);
   let url = new URL(currentUrl);
   let params = new URLSearchParams(url.search);
+
   const handlePathName = (pathname) => {
     url.pathname = pathname;
     window.history.pushState(null, "", url);
