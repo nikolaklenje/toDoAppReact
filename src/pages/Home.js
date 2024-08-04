@@ -5,6 +5,11 @@ import ResetPassword from "./resetPassword";
 import SignUp from "./signUp";
 import ForgotPassword from "./forgotPassword";
 
+const genId = () => {
+  let itemId = Math.random().toString(16).slice(2);
+  return itemId;
+};
+
 const routs = [
   {
     path: "/login",
@@ -65,14 +70,9 @@ const Home = () => {
     complete: false,
   });
 
-  const genId = () => {
-    let itemId = Math.random().toString(16).slice(2);
-    return itemId;
-  };
-
   const router = useRouter(window.location.href, editedItem.id);
 
-  console.log("DA VIDIMO OVO", router);
+  // console.log("DA VIDIMO OVO", router);
   let url = new URL(currentUrl);
   let params = new URLSearchParams(url.search);
 
