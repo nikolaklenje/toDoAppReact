@@ -5,29 +5,24 @@ import ResetPassword from "./resetPassword";
 import SignUp from "./signUp";
 import ForgotPassword from "./forgotPassword";
 
-/*
-routs = [{
-  path: '/todo/edit/:id/:bla/:truc`
-  element: component
-  }, {
-
-  path: '/todo/add`
-  element: component
-  }, {
-
-  path: '/login`
-  element: component
-  }]
- */
-
-// url = /todo/edit/123/nikola/klenje
-
-// routParams: {
-//  id: 123,
-//  bla: `nikola`,
-//  truc: `klenje`
-// }
-
+const routs = [
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/resetPassword",
+    element: <ResetPassword />,
+  },
+  {
+    path: "/signUp",
+    element: <SignUp />,
+  },
+  {
+    path: "/forgotPassword",
+    element: <ForgotPassword />,
+  },
+];
 const useRouter = (url, id) => {
   let query = window.location.search;
   let urlParams = new URLSearchParams(query);
@@ -36,7 +31,7 @@ const useRouter = (url, id) => {
   const [router, setRouter] = useState({
     route: url,
     routParams: {
-      id: id, // 22
+      id: id,
     },
     queryParams: {
       dir: orderParam,
@@ -44,14 +39,10 @@ const useRouter = (url, id) => {
     },
   });
   useEffect(() => {
-    query = window.location.search;
-    urlParams = new URLSearchParams(query);
-    orderParam = urlParams.get("order");
-    dirParam = urlParams.get("dir");
     setRouter({
       route: url,
       routParams: {
-        id: id, // 22
+        id: id,
       },
       queryParams: {
         dir: dirParam,
@@ -80,7 +71,8 @@ const Home = () => {
   };
 
   const router = useRouter(window.location.href, editedItem.id);
-  console.log("####@@@@", router);
+
+  console.log("DA VIDIMO OVO", router);
   let url = new URL(currentUrl);
   let params = new URLSearchParams(url.search);
 
@@ -159,31 +151,6 @@ const Home = () => {
       removeQueryParams();
     }
   };
-
-  // /todo/edit/:id
-  // /todo/edit/:val/:id
-  // /todo/edit/bla/22
-  // /todo/add
-  //  todo?order=name&dir=[asc|desc]
-
-  // /login
-
-  /* we want hook useRouter that will return object like:
-   router = {
-    route: 'todo/edit/:id'
-    routParams?: {
-      id: '...' // 22
-
-    },
-    queryParams?: {
-      order: 'name'
-      dir: 'asc/desc'
-    }
-   }
-   */
-
-  // add login/signup/... pages
-
   const handleDelete = (todo) => {
     setToDoList(toDoList.filter((item) => item.id !== todo.id));
   };
@@ -315,13 +282,3 @@ const Home = () => {
   );
 };
 export default Home;
-
-//Napravi hook
-//kako iz rute da isparsiram query params
-//kako mise zove param i gde se nalazi i da parsiram url
-//uzmes odredjeni zapis i iscupas iz njega nesto je parsiranje
-
-//strogo vezano je za teksove
-//da bi parsiara moras da znas pravila za odredeeni tip (Json i xml imaju razlicita pravila)
-
-// UrlParams -> HOOK(urlParams)=> return {object of params}}=>
