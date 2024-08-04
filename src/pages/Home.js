@@ -28,7 +28,7 @@ routs = [{
 //  truc: `klenje`
 // }
 
-const useRouter = (url) => {
+const useRouter = (url, id) => {
   let query = window.location.search;
   let urlParams = new URLSearchParams(query);
   let orderParam = urlParams.get("order");
@@ -36,7 +36,7 @@ const useRouter = (url) => {
   const [router, setRouter] = useState({
     route: url,
     routParams: {
-      id: url.id, // 22
+      id: id, // 22
     },
     queryParams: {
       dir: orderParam,
@@ -51,7 +51,7 @@ const useRouter = (url) => {
     setRouter({
       route: url,
       routParams: {
-        id: url.id, // 22
+        id: id, // 22
       },
       queryParams: {
         dir: dirParam,
@@ -79,7 +79,7 @@ const Home = () => {
     return itemId;
   };
 
-  const router = useRouter(window.location.href);
+  const router = useRouter(window.location.href, editedItem.id);
   console.log("####@@@@", router);
   let url = new URL(currentUrl);
   let params = new URLSearchParams(url.search);
