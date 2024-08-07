@@ -34,16 +34,15 @@ const routes = [
 ];
 
 const useRouter = (url, routes) => {
-  /*
- if router contains edit 
- take :id and set it as id
- 
- 
- */
+  let query = window.location.search;
+  let urlParams = new URLSearchParams(query);
+  let orderParam = urlParams.get("order");
+  let dirParam = urlParams.get("dir");
+
   const pathname = new URL(url).pathname;
   const pathNameParts = pathname.split("/");
+  const [itemUrlId, setItemUrlId] = useState("");
 
-  console.log("IIIIII", pathname);
   useEffect(() => {
     const sameRoute = routes.find((route) => {
       const routesPathParts = route.path.split("'");
@@ -52,12 +51,11 @@ const useRouter = (url, routes) => {
       }
       return true;
     });
-  });
-  let query = window.location.search;
-  let urlParams = new URLSearchParams(query);
-  let orderParam = urlParams.get("order");
-  let dirParam = urlParams.get("dir");
-  const [itemUrlId, setItemUrlId] = useState("");
+    if (sameRoute && sameRoute.path.includes("/edit/:id")) {
+      const idIndex = sameRoute.split("/").indexOf(":id");
+      setItemUrlId(pathNameParts[idIndex]);
+    }
+  }, [pathname, pathNameParts]);
 
   const [router, setRouter] = useState({
     route: url,
