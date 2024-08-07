@@ -10,7 +10,11 @@ const genId = () => {
   return itemId;
 };
 
-const routs = [
+const routes = [
+  { path: "/todo/edit/:id" },
+  {
+    path: "/todo/add",
+  },
   {
     path: "/login",
     element: <Login />,
@@ -28,15 +32,35 @@ const routs = [
     element: <ForgotPassword />,
   },
 ];
-const useRouter = (url, id) => {
+
+const useRouter = (url, routes) => {
   let query = window.location.search;
   let urlParams = new URLSearchParams(query);
   let orderParam = urlParams.get("order");
   let dirParam = urlParams.get("dir");
+
+  const pathname = new URL(url).pathname;
+  const pathNameParts = pathname.split("/");
+  const [itemUrlId, setItemUrlId] = useState("");
+
+  useEffect(() => {
+    const sameRoute = routes.find((route) => {
+      const routesPathParts = route.path.split("'");
+      if (pathNameParts.length !== routesPathParts.pathname) {
+        return false;
+      }
+      return true;
+    });
+    if (sameRoute && sameRoute.path.includes("/edit/:id")) {
+      const idIndex = sameRoute.split("/").indexOf(":id");
+      setItemUrlId(pathNameParts[idIndex]);
+    }
+  }, [pathname, pathNameParts]);
+
   const [router, setRouter] = useState({
     route: url,
     routParams: {
-      id: id,
+      id: itemUrlId,
     },
     queryParams: {
       dir: orderParam,
@@ -47,7 +71,7 @@ const useRouter = (url, id) => {
     setRouter({
       route: url,
       routParams: {
-        id: id,
+        id: itemUrlId,
       },
       queryParams: {
         dir: dirParam,
@@ -70,9 +94,9 @@ const Home = () => {
     complete: false,
   });
 
-  const router = useRouter(window.location.href, editedItem.id);
+  const router = useRouter(window.location.href, routes);
 
-  // console.log("DA VIDIMO OVO", router);
+  console.log("DA VIDIMO OVO", router);
   let url = new URL(currentUrl);
   let params = new URLSearchParams(url.search);
 
@@ -252,7 +276,7 @@ const Home = () => {
                         onClick={() => {
                           setEditedItem(todo);
                           setComponentName("edit");
-                          handlePathName(`todo/edit/${todo.id}`);
+                          handlePathName(`todo/edit/:${todo.id}`);
                         }}
                       >
                         edit
