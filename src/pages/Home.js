@@ -15,6 +15,7 @@ const routes = [
   {
     path: "/todo/add",
   },
+  // { path: "/?param1=value1&param2=value2" },
   {
     path: "/login",
     element: <Login />,
@@ -35,9 +36,8 @@ const routes = [
 
 const useRouter = (url, routes) => {
   let query = window.location.search;
-  let urlParams = new URLSearchParams(query);
-  let orderParam = urlParams.get("order");
-  let dirParam = urlParams.get("dir");
+  const [orderParam, setOrderParam] = useState("");
+  const [dirParam, setDirParam] = useState("");
 
   const pathname = new URL(url).pathname;
   const pathNameParts = pathname.split("/");
@@ -47,17 +47,36 @@ const useRouter = (url, routes) => {
     const sameRoute = routes.find((route) => {
       const routesPathParts = route.path.split("/");
       if (pathNameParts.length !== routesPathParts.length) {
-        console.log("Return false", pathNameParts, routesPathParts);
         return false;
       }
-      console.log("Return true");
       return true;
     });
     if (sameRoute && sameRoute.path.includes("/edit/:id")) {
       const idIndex = sameRoute.path.split("/").indexOf(":id");
-      console.log("%%%%%%%%%", pathNameParts[idIndex]);
       const newId = pathNameParts[idIndex];
       setItemUrlId(newId);
+    }
+    if (url.includes("?")) {
+      const paramsQuery = url.substring(url.indexOf("?") + 1).split("&");
+      console.log("EVO UPITNIKA", paramsQuery);
+
+      for (let i = 0; i < paramsQuery.length; i++) {
+        if (paramsQuery[i].includes("dir")) {
+          const dirValue = paramsQuery[i].substring(
+            paramsQuery[i].indexOf("=") + 1
+          );
+          setDirParam(dirValue);
+          console.log(paramsQuery[i]);
+        }
+
+        if (paramsQuery[i].includes("order")) {
+          const orderValue = paramsQuery[i].substring(
+            paramsQuery[i].indexOf("=") + 1
+          );
+          setOrderParam(orderValue);
+          console.log(paramsQuery[i]);
+        }
+      }
     }
   }, [pathname, pathNameParts]);
 
@@ -67,8 +86,8 @@ const useRouter = (url, routes) => {
       id: itemUrlId,
     },
     queryParams: {
-      dir: orderParam,
-      order: dirParam,
+      dir: dirParam,
+      order: orderParam,
     },
   });
   useEffect(() => {
@@ -82,7 +101,7 @@ const useRouter = (url, routes) => {
         order: orderParam,
       },
     });
-  }, [url]);
+  }, [url, itemUrlId, dirParam, orderParam]);
   return router;
 };
 
