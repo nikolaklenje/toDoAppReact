@@ -45,15 +45,19 @@ const useRouter = (url, routes) => {
 
   useEffect(() => {
     const sameRoute = routes.find((route) => {
-      const routesPathParts = route.path.split("'");
-      if (pathNameParts.length !== routesPathParts.pathname) {
+      const routesPathParts = route.path.split("/");
+      if (pathNameParts.length !== routesPathParts.length) {
+        console.log("Return false", pathNameParts, routesPathParts);
         return false;
       }
+      console.log("Return true");
       return true;
     });
     if (sameRoute && sameRoute.path.includes("/edit/:id")) {
-      const idIndex = sameRoute.split("/").indexOf(":id");
-      setItemUrlId(pathNameParts[idIndex]);
+      const idIndex = sameRoute.path.split("/").indexOf(":id");
+      console.log("%%%%%%%%%", pathNameParts[idIndex]);
+      const newId = pathNameParts[idIndex];
+      setItemUrlId(newId);
     }
   }, [pathname, pathNameParts]);
 
@@ -276,7 +280,7 @@ const Home = () => {
                         onClick={() => {
                           setEditedItem(todo);
                           setComponentName("edit");
-                          handlePathName(`todo/edit/:${todo.id}`);
+                          handlePathName(`todo/edit/${todo.id}`);
                         }}
                       >
                         edit
