@@ -36,8 +36,7 @@ const routes = [
 
 const useRouter = (url, routes) => {
   let query = window.location.search;
-  const [orderParam, setOrderParam] = useState("");
-  const [dirParam, setDirParam] = useState("");
+  const [paramObject, setParamObject] = useState("");
 
   const pathname = new URL(url).pathname;
   const pathNameParts = pathname.split("/");
@@ -58,37 +57,22 @@ const useRouter = (url, routes) => {
     }
     if (url.includes("?")) {
       const paramsQuery = url.substring(url.indexOf("?") + 1).split("&");
-      console.log("EVO UPITNIKA", paramsQuery);
-
-      for (let i = 0; i < paramsQuery.length; i++) {
-        if (paramsQuery[i].includes("dir")) {
-          const dirValue = paramsQuery[i].substring(
-            paramsQuery[i].indexOf("=") + 1
-          );
-          setDirParam(dirValue);
-          console.log(paramsQuery[i]);
-        }
-
-        if (paramsQuery[i].includes("order")) {
-          const orderValue = paramsQuery[i].substring(
-            paramsQuery[i].indexOf("=") + 1
-          );
-          setOrderParam(orderValue);
-          console.log(paramsQuery[i]);
-        }
-      }
+      console.log(paramsQuery);
+      const queryParamsObject = paramsQuery.reduce((acc, param) => {
+        const [key, value] = param.split("=");
+        acc[key] = value;
+        return acc;
+      }, {});
+      setParamObject(queryParamsObject);
     }
-  }, [pathname, pathNameParts]);
+  }, [pathname, query]);
 
   const [router, setRouter] = useState({
     route: url,
     routParams: {
       id: itemUrlId,
     },
-    queryParams: {
-      dir: dirParam,
-      order: orderParam,
-    },
+    queryParams: paramObject,
   });
   useEffect(() => {
     setRouter({
@@ -96,12 +80,9 @@ const useRouter = (url, routes) => {
       routParams: {
         id: itemUrlId,
       },
-      queryParams: {
-        dir: dirParam,
-        order: orderParam,
-      },
+      queryParams: paramObject,
     });
-  }, [url, itemUrlId, dirParam, orderParam]);
+  }, [itemUrlId, paramObject]);
   return router;
 };
 
@@ -118,8 +99,7 @@ const Home = () => {
   });
 
   const router = useRouter(window.location.href, routes);
-
-  console.log("DA VIDIMO OVO", router);
+  console.log("DAVIDIIMOOO", router);
   let url = new URL(currentUrl);
   let params = new URLSearchParams(url.search);
 
