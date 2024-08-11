@@ -37,10 +37,9 @@ const routes = [
 const useRouter = (url, routes) => {
   let query = window.location.search;
   const [paramObject, setParamObject] = useState("");
-
-  const pathname = new URL(url).pathname;
-  const pathNameParts = pathname.split("/");
-  const [itemUrlId, setItemUrlId] = useState("");
+  const [routeParamObject, setRouteParamObject] = useState("");
+  const pathName = new URL(url).pathname;
+  const pathNameParts = pathName.split("/");
 
   useEffect(() => {
     const sameRoute = routes.find((route) => {
@@ -50,10 +49,19 @@ const useRouter = (url, routes) => {
       }
       return true;
     });
-    if (sameRoute && sameRoute.path.includes("/edit/:id")) {
-      const idIndex = sameRoute.path.split("/").indexOf(":id");
-      const newId = pathNameParts[idIndex];
-      setItemUrlId(newId);
+    if (sameRoute && sameRoute.path.includes("/edit/:")) {
+      const newRouteParName = sameRoute.path.substring(
+        sameRoute.path.indexOf(":") + 1
+      );
+
+      const routeArray = sameRoute.path.split("/");
+      console.log("_______", routeArray);
+      const indexOfParam = routeArray.indexOf(`:${newRouteParName}`);
+      console.log("paaaaa", indexOfParam);
+      const objectValues = {
+        [newRouteParName]: pathNameParts[indexOfParam],
+      };
+      setRouteParamObject(objectValues);
     }
     if (url.includes("?")) {
       const paramsQuery = url.substring(url.indexOf("?") + 1).split("&");
@@ -65,24 +73,20 @@ const useRouter = (url, routes) => {
       }, {});
       setParamObject(queryParamsObject);
     }
-  }, [pathname, query]);
+  }, [pathName, query]);
 
   const [router, setRouter] = useState({
     route: url,
-    routParams: {
-      id: itemUrlId,
-    },
+    routParams: routeParamObject,
     queryParams: paramObject,
   });
   useEffect(() => {
     setRouter({
       route: url,
-      routParams: {
-        id: itemUrlId,
-      },
+      routParams: routeParamObject,
       queryParams: paramObject,
     });
-  }, [itemUrlId, paramObject]);
+  }, [routeParamObject, paramObject, url]);
   return router;
 };
 
