@@ -10,7 +10,12 @@ const genId = () => {
   return itemId;
 };
 
-const routs = [
+const routes = [
+  { path: "/todo/edit/:id" },
+  {
+    path: "/todo/add",
+  },
+  // { path: "/?param1=value1&param2=value2" },
   {
     path: "/login",
     element: <Login />,
@@ -28,33 +33,60 @@ const routs = [
     element: <ForgotPassword />,
   },
 ];
-const useRouter = (url, id) => {
+
+const useRouter = (url, routes) => {
   let query = window.location.search;
-  let urlParams = new URLSearchParams(query);
-  let orderParam = urlParams.get("order");
-  let dirParam = urlParams.get("dir");
+  const [paramObject, setParamObject] = useState("");
+  const [routeParamObject, setRouteParamObject] = useState("");
+  const pathName = new URL(url).pathname;
+  const pathNameParts = pathName.split("/");
+
+  useEffect(() => {
+    const sameRoute = routes.find((route) => {
+      const routesPathParts = route.path.split("/");
+      if (pathNameParts.length !== routesPathParts.length) {
+        return false;
+      }
+      return true;
+    });
+    if (sameRoute && sameRoute.path.includes("/edit/:")) {
+      const newRouteParName = sameRoute.path.substring(
+        sameRoute.path.indexOf(":") + 1
+      );
+
+      const routeArray = sameRoute.path.split("/");
+      console.log("_______", routeArray);
+      const indexOfParam = routeArray.indexOf(`:${newRouteParName}`);
+      console.log("paaaaa", indexOfParam);
+      const objectValues = {
+        [newRouteParName]: pathNameParts[indexOfParam],
+      };
+      setRouteParamObject(objectValues);
+    }
+    if (url.includes("?")) {
+      const paramsQuery = url.substring(url.indexOf("?") + 1).split("&");
+      console.log(paramsQuery);
+      const queryParamsObject = paramsQuery.reduce((acc, param) => {
+        const [key, value] = param.split("=");
+        acc[key] = value;
+        return acc;
+      }, {});
+      setParamObject(queryParamsObject);
+    }
+  }, [pathName, query]);
+
   const [router, setRouter] = useState({
     route: url,
-    routParams: {
-      id: id,
-    },
-    queryParams: {
-      dir: orderParam,
-      order: dirParam,
-    },
+    routParams: routeParamObject,
+    queryParams: paramObject,
   });
   useEffect(() => {
     setRouter({
       route: url,
-      routParams: {
-        id: id,
-      },
-      queryParams: {
-        dir: dirParam,
-        order: orderParam,
-      },
+      routParams: routeParamObject,
+      queryParams: paramObject,
     });
-  }, [url]);
+  }, [routeParamObject, paramObject, url]);
   return router;
 };
 
@@ -70,9 +102,8 @@ const Home = () => {
     complete: false,
   });
 
-  const router = useRouter(window.location.href, editedItem.id);
-
-  // console.log("DA VIDIMO OVO", router);
+  const router = useRouter(window.location.href, routes);
+  console.log("DAVIDIIMOOO", router);
   let url = new URL(currentUrl);
   let params = new URLSearchParams(url.search);
 
